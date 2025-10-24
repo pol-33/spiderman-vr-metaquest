@@ -1,3 +1,4 @@
+using Oculus.Interaction;
 using UnityEngine;
 
 public class ControllerInputRight : MonoBehaviour
@@ -8,10 +9,18 @@ public class ControllerInputRight : MonoBehaviour
     public GameObject prediction;
     public LineRenderer lineRenderer;
 
+    private Rigidbody rb;
+    private float distance;
+
+    private void Start()
+    {
+        rb = vrCamParent.GetComponent<Rigidbody>();
+    }
+
     private bool hasPointed;
     void Update()
     {
-        moveThumb();
+        
 
         // Trigger
         float triggerValue = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger);
@@ -23,6 +32,7 @@ public class ControllerInputRight : MonoBehaviour
             {
                 drawLine();
                 prediction.SetActive(false);
+                moveLine();
             }
             else
             {
@@ -33,6 +43,7 @@ public class ControllerInputRight : MonoBehaviour
         {
             hasPointed = selectWebPoint();
             delLine();
+            moveThumb();
         }
 
 
@@ -50,9 +61,22 @@ public class ControllerInputRight : MonoBehaviour
         if (thumbstick.magnitude > 0.1f)
         {
             Vector3 movement = (thumbstick.y * vrEye.transform.forward + thumbstick.x * vrEye.transform.right) * moveSpeed * Time.deltaTime;
-            vrCamParent.transform.Translate(movement);
+            //vrCamParent.transform.Translate(movement);
+            Vector3 Pos = rb.position + movement;
+            rb.MovePosition(Pos);  
+
         }
     }
+    void moveLine()
+    {
+        Vector2 thumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        if (thumbstick.magnitude > 0.1f)
+        {
+            Vector3 direction = prediction.transform.position - rb.position;
+            rb.MovePosition(rb.position + direction * thumbstick.y * 5 * Time.deltaTime);
+        }
+    }
+
     bool selectWebPoint()
     {
         RaycastHit hit;

@@ -5,8 +5,8 @@ public class ControllerInputRight : MonoBehaviour
 {
     public GameObject vrCamParent;
     public GameObject vrEye;
-    public float moveSpeed = 2.0f;
-    public GameObject prediction;
+    public float moveSpeed = 8.0f;
+    public GameObject predictionPoint;
     public LineRenderer lineRenderer;
 
     private Vector3 swingPoint;
@@ -34,7 +34,7 @@ public class ControllerInputRight : MonoBehaviour
             {
                 startSwing();
                 drawLine();
-                prediction.SetActive(false);
+                predictionPoint.SetActive(false);
                 moveLine();
             }
             else
@@ -78,7 +78,7 @@ public class ControllerInputRight : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction * thumbstick.y * 2 * Time.deltaTime);
+            rb.MovePosition(rb.position + direction * thumbstick.y * 1 * Time.deltaTime);
 
             distance = Vector3.Distance(rb.position, swingPoint);
 
@@ -100,16 +100,16 @@ public class ControllerInputRight : MonoBehaviour
             // store the hit as a world-space target so it won't change when the controller/rig moves
             targetPoint = swingPoint;
 
-            prediction.SetActive(true);
-            prediction.transform.position = swingPoint;
-            prediction.GetComponent<Renderer>().material.color = Color.yellow;
+            predictionPoint.SetActive(true);
+            predictionPoint.transform.position = swingPoint;
+            predictionPoint.GetComponent<Renderer>().material.color = Color.yellow;
         }
         else
         {
             // store a fallback world-space point
             targetPoint = transform.position + transform.forward * 50;
-            prediction.transform.position = targetPoint;
-            prediction.GetComponent<Renderer>().material.color = Color.red;
+            predictionPoint.transform.position = targetPoint;
+            predictionPoint.GetComponent<Renderer>().material.color = Color.red;
         }
         return hasHit;
     }

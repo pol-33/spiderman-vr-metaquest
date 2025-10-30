@@ -1,3 +1,4 @@
+using Oculus.Interaction;
 using UnityEngine;
 
 public class ControllerInput : MonoBehaviour
@@ -8,31 +9,45 @@ public class ControllerInput : MonoBehaviour
     public GameObject prediction;
     public LineRenderer lineRenderer;
 
+    private Vector3 swingPoint;
+    private Rigidbody rb;
+    private SpringJoint joint;
+    private float distance;
+
+    private Vector3 targetPoint; // world-space target point for the web hit
     private bool hasPointed;
+
+    private void Start()
+    {
+        rb = vrCamParent.GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
-        moveThumb();
-
         // Trigger
         float triggerValue = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
 
         if (triggerValue > 0.1f)
         {
-            Debug.Log($"Trigger: {triggerValue}");
+            // Debug.Log($"Trigger: {triggerValue}");
             if (hasPointed)
             {
+                startSwing();
                 drawLine();
                 prediction.SetActive(false);
+                moveLine();
             }
             else
             {
-                selectWebPoint();
+                hasPointed = selectWebPoint();
             }
         }
         else
         {
             hasPointed = selectWebPoint();
+            stopSwing();
             delLine();
+            moveThumb();
         }
 
 
@@ -50,36 +65,88 @@ public class ControllerInput : MonoBehaviour
         if (thumbstick.magnitude > 0.1f)
         {
             Vector3 movement = (thumbstick.y * vrEye.transform.forward + thumbstick.x * vrEye.transform.right) * moveSpeed * Time.deltaTime;
-            vrCamParent.transform.Translate(movement);
+            //vrCamParent.transform.Translate(movement);
+            Vector3 Pos = rb.position + movement;
+            rb.MovePosition(Pos);  
+
         }
     }
+    void moveLine()
+    {
+        Vector2 thumbstick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+        if (thumbstick.magnitude > 0.1f)
+        {
+            // use stored world-space targetPoint so it doesn't move with the controller
+            Vector3 direction = targetPoint - rb.position;
+            rb.MovePosition(rb.position + direction * thumbstick.y * 2 * Time.deltaTime);
+
+            distance = Vector3.Distance(rb.position, swingPoint);
+
+            // The distance grapple will try to keep from grapple point. 
+            joint.maxDistance = distance;
+        }
+    }
+
+    // Get swing point
     bool selectWebPoint()
     {
         RaycastHit hit;
         bool hasHit = Physics.Raycast(transform.position, transform.forward, out hit, 50);
         if (hasHit)
         {
-            Debug.Log("Hit: " + hit.collider.name);
-            Vector3 swingPoint = hit.point;
+            // Debug.Log("Hit: " + hit.collider.name);
+            swingPoint = hit.point;
+
+            // store the hit as a world-space target so it won't change when the controller/rig moves
+            targetPoint = swingPoint;
+
             prediction.SetActive(true);
             prediction.transform.position = swingPoint;
             prediction.GetComponent<Renderer>().material.color = Color.yellow;
         }
         else
         {
-            prediction.transform.position = transform.position + transform.forward*50;
+            // store a fallback world-space point
+            targetPoint = transform.position + transform.forward * 50;
+            prediction.transform.position = targetPoint;
             prediction.GetComponent<Renderer>().material.color = Color.red;
         }
-            return hasHit;
+        return hasHit;
     }
+
+    void startSwing()
+    {
+        if (joint != null) return;
+
+        joint = rb.gameObject.AddComponent<SpringJoint>();
+        joint.autoConfigureConnectedAnchor = false;
+        joint.connectedAnchor = swingPoint;
+
+        distance = Vector3.Distance(rb.position, swingPoint);
+
+        // The distance grapple will try to keep from grapple point. 
+        joint.maxDistance = distance;
+
+        joint.spring = 4.5f;
+        joint.damper = 7f;
+        joint.massScale = 4.5f;
+    }
+
+    void stopSwing()
+    {
+        Destroy(joint);
+    }
+
     void drawLine()
     {
         lineRenderer.enabled = true;
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, prediction.transform.position);
+        lineRenderer.SetPosition(1, targetPoint);
     }
-    void delLine(){
+
+    void delLine()
+    {
         lineRenderer.enabled = false;
     }
 }

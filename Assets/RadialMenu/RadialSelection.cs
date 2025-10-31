@@ -17,7 +17,7 @@ public class RadialSelection : MonoBehaviour
 
     public Transform handTransform;
 
-    public UnityEvent<int> OnPartSelected;
+    public List<UnityEvent> OnPartSelectedEvents = new List<UnityEvent>();
 
     public string[] partLabels;
 
@@ -37,7 +37,7 @@ public class RadialSelection : MonoBehaviour
         {
             SpawnRadialPart();
         }
-        
+
         if (OVRInput.Get(spawnButton))
         {
             GetSelectedPart();
@@ -54,7 +54,11 @@ public class RadialSelection : MonoBehaviour
         // Only invoke if a valid part was selected
         if (currentSelectedPartIndex >= 0 && currentSelectedPartIndex < numberOfRadialParts)
         {
-            OnPartSelected.Invoke(currentSelectedPartIndex);
+            // Invoke only the specific event for the selected part
+            if (currentSelectedPartIndex < OnPartSelectedEvents.Count && OnPartSelectedEvents[currentSelectedPartIndex] != null)
+            {
+                OnPartSelectedEvents[currentSelectedPartIndex].Invoke();
+            }
         }
         
         radialPartCanvas.gameObject.SetActive(false);

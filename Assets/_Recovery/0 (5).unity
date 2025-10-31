@@ -12850,7 +12850,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.43
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -12912,13 +12912,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841474519}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.9038171, y: -0.23449838, z: 0.115915544, w: 0.33865735}
+  m_LocalRotation: {x: 0.15984975, y: 0.3086545, z: 0.014843025, w: 0.9375288}
   m_LocalPosition: {x: 554.9412, y: 408.9827, z: 523.9824}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 138.2, y: -3.9, z: 27.6}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &841474522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12959,16 +12959,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa700e02fa5b64a2f8c9c01d19e15ce7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DayNightToggle
+  m_EditorClassIdentifier: '::'
   directionalLight: {fileID: 841474520}
-  dayAmbientLight: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  dayAmbientLight: {r: 0.75, g: 0.7, b: 0.7, a: 1}
   dayLightIntensity: 1
   dayLightColor: {r: 1, g: 1, b: 1, a: 1}
-  daySkybox: {fileID: 2100000, guid: da976b1a4f7ebb949b0f71341e4f1821, type: 2}
   nightAmbientLight: {r: 0.1, g: 0.1, b: 0.15, a: 1}
   nightLightIntensity: 0.5
   nightLightColor: {r: 0.6, g: 0.6, b: 0.8, a: 1}
-  nightSkybox: {fileID: 2100000, guid: 5ba172cd3918d7c44aa6d04446119a00, type: 2}
 --- !u!1 &844511783
 GameObject:
   m_ObjectHideFlags: 0

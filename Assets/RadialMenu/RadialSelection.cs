@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 public class RadialSelection : MonoBehaviour
 {   
@@ -17,6 +18,8 @@ public class RadialSelection : MonoBehaviour
     public Transform handTransform;
 
     public UnityEvent<int> OnPartSelected;
+
+    public string[] partLabels;
 
     private List<GameObject> spawnedParts = new List<GameObject>();
     private int currentSelectedPartIndex = -1;
@@ -48,8 +51,14 @@ public class RadialSelection : MonoBehaviour
     
     public void HideAndTriggerSelected()
     {
-        OnPartSelected.Invoke(currentSelectedPartIndex);
+        // Only invoke if a valid part was selected
+        if (currentSelectedPartIndex >= 0 && currentSelectedPartIndex < numberOfRadialParts)
+        {
+            OnPartSelected.Invoke(currentSelectedPartIndex);
+        }
+        
         radialPartCanvas.gameObject.SetActive(false);
+        currentSelectedPartIndex = -1; // Reset selection
     }
 
     public void GetSelectedPart()
@@ -106,6 +115,13 @@ public class RadialSelection : MonoBehaviour
             spawnedRadialPart.transform.localEulerAngles = radialPartEulerAngle;
 
             spawnedRadialPart.GetComponent<Image>().fillAmount = (1 / (float)numberOfRadialParts) - (angleBetweenParts / 360);
+
+            // Add text label to the radial part
+            TextMeshProUGUI textComponent = spawnedRadialPart.GetComponentInChildren<TextMeshProUGUI>();
+            if (textComponent != null && partLabels != null && i < partLabels.Length)
+            {
+                textComponent.text = partLabels[i];
+            }
 
             spawnedParts.Add(spawnedRadialPart);
         }

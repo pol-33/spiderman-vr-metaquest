@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class RadialSelection : MonoBehaviour
 {   
+    public OVRInput.Button spawnButton;
+
     [Range (1, 12)]
     public int numberOfRadialParts;
     public GameObject radialPartPrefab;
@@ -12,6 +15,8 @@ public class RadialSelection : MonoBehaviour
     public float angleBetweenParts = 10;
 
     public Transform handTransform;
+
+    public UnityEvent<int> OnPartSelected;
 
     private List<GameObject> spawnedParts = new List<GameObject>();
     private int currentSelectedPartIndex = -1;
@@ -25,8 +30,26 @@ public class RadialSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SpawnRadialPart();
-        GetSelectedPart();
+        if (OVRInput.GetDown(spawnButton))
+        {
+            SpawnRadialPart();
+        }
+        
+        if (OVRInput.Get(spawnButton))
+        {
+            GetSelectedPart();
+        }
+
+        if (OVRInput.GetUp(spawnButton))
+        {
+            HideAndTriggerSelected();
+        }
+    }
+    
+    public void HideAndTriggerSelected()
+    {
+        OnPartSelected.Invoke(currentSelectedPartIndex);
+        radialPartCanvas.gameObject.SetActive(false);
     }
 
     public void GetSelectedPart()
@@ -40,7 +63,7 @@ public class RadialSelection : MonoBehaviour
         {
             angle += 360;
         }
-        
+
         currentSelectedPartIndex = (int) angle * numberOfRadialParts / 360;
 
         for (int i = 0; i < spawnedParts.Count; i++)
@@ -62,6 +85,10 @@ public class RadialSelection : MonoBehaviour
 
     public void SpawnRadialPart()
     {
+        radialPartCanvas.gameObject.SetActive(true);
+        radialPartCanvas.position = handTransform.position;
+        radialPartCanvas.rotation = handTransform.rotation;
+
         foreach (GameObject part in spawnedParts)
         {
             Destroy(part);

@@ -13941,6 +13941,106 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1091284630}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &893401722
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1452
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 530
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 214
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823494713986888017, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2997765868309900241, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -800
+      objectReference: {fileID: 0}
+    - target: {fileID: 2997765868309900241, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989779493241275682, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -900
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989779493241275682, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6680090861479289630, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -800
+      objectReference: {fileID: 0}
+    - target: {fileID: 6680090861479289630, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7096300606923111884, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7096300606923111884, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332770671694327198, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+      propertyPath: m_Name
+      value: Fireworks
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+--- !u!114 &893401723 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1739612984446208141, guid: 6c25d8ceae7cd4ae29092b05d1e3ba03, type: 3}
+  m_PrefabInstance: {fileID: 893401722}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe16b4a4b36b4ad09fc514fdde8777f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &903413895
 GameObject:
   m_ObjectHideFlags: 0
@@ -16282,11 +16382,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67e2a5c1acb1415ab3bb77a649118d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  numberOfRadialParts: 6
+  spawnButton: 1
+  numberOfRadialParts: 2
   radialPartPrefab: {fileID: 4733406449880305694, guid: 56b196364b5f34f73b6ed932e408366f, type: 3}
   radialPartCanvas: {fileID: 608142744}
   angleBetweenParts: 10
   handTransform: {fileID: 1949240452}
+  OnPartSelected:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 893401723}
+        m_TargetAssemblyTypeName: FireworkToggle, Assembly-CSharp
+        m_MethodName: ToggleFirework
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1121378027
 Transform:
   m_ObjectHideFlags: 0
@@ -28094,3 +28222,4 @@ SceneRoots:
   - {fileID: 521061143}
   - {fileID: 1121378027}
   - {fileID: 1129752542}
+  - {fileID: 893401722}

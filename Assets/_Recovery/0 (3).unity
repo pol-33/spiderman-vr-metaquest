@@ -9033,7 +9033,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -16383,8 +16383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   spawnButton: 1
-  numberOfRadialParts: 3
-  radialPartPrefab: {fileID: 1900436641779749235, guid: a5e158bb626254887b101afa702f5b51, type: 3}
+  numberOfRadialParts: 2
+  radialPartPrefab: {fileID: 4813048927531421609, guid: 15e708df73cfb43689ec876a4e2a60aa, type: 3}
   radialPartCanvas: {fileID: 608142744}
   angleBetweenParts: 10
   handTransform: {fileID: 1949240452}
@@ -16415,22 +16415,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 893401723}
-        m_TargetAssemblyTypeName: FireworkToggle, Assembly-CSharp
-        m_MethodName: ToggleFirework
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   partLabels:
   - Exit Menu
   - Fireworks
-  - Day/Night
 --- !u!4 &1121378027
 Transform:
   m_ObjectHideFlags: 0
@@ -16440,7 +16427,7 @@ Transform:
   m_GameObject: {fileID: 1121378025}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 623.5, y: 421.8, z: 581.85}
+  m_LocalPosition: {x: 623.5, y: 421.8, z: 584.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

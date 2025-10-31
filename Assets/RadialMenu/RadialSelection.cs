@@ -82,12 +82,27 @@ public class RadialSelection : MonoBehaviour
                 // Highlight selected part
                 spawnedParts[i].GetComponent<Image>().color = Color.yellow;
                 spawnedParts[i].transform.localScale = Vector3.one * 1.1f;
+
+                // Highlight text
+                TextMeshProUGUI textComponent = spawnedParts[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (textComponent != null)
+                {
+                    textComponent.color = Color.yellow;
+                }
             }
             else
             {
                 // Reset color for non-selected parts
                 spawnedParts[i].GetComponent<Image>().color = Color.white;
                 spawnedParts[i].transform.localScale = Vector3.one;
+
+                // Reset text color
+                TextMeshProUGUI textComponent = spawnedParts[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (textComponent != null)
+                {
+                    textComponent.color = Color.white;
+                }
+
             }
         }
     }
@@ -118,11 +133,27 @@ public class RadialSelection : MonoBehaviour
 
             // Add text label to the radial part
             TextMeshProUGUI textComponent = spawnedRadialPart.GetComponentInChildren<TextMeshProUGUI>();
-            if (textComponent != null && partLabels != null && i < partLabels.Length)
+            if (textComponent != null)
             {
-                textComponent.text = partLabels[i];
-            }
+                if (partLabels != null && i < partLabels.Length && !string.IsNullOrEmpty(partLabels[i]))
+                {
+                    textComponent.text = partLabels[i];
+                }
+                else
+                {
+                    textComponent.text = $"Option {i + 1}"; // Fallback text
+                }
+                // Configure text alignment and positioning
+                textComponent.alignment = TextAlignmentOptions.Center;
+                
+                // Position text at a consistent distance from center
+                RectTransform textRect = textComponent.GetComponent<RectTransform>();
+                textRect.anchoredPosition = new Vector2(130, 130); // Adjust the Y value to position text radially
+                textRect.sizeDelta = new Vector2(200, 30); // Set consistent size
 
+                // Reset text rotation to keep it upright
+                textComponent.transform.localRotation = Quaternion.Euler(0, 0, -angle);
+            }
             spawnedParts.Add(spawnedRadialPart);
         }
     }

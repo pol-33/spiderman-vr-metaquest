@@ -8,6 +8,7 @@ public class ControllerInputRight : MonoBehaviour
     public float moveSpeed = 8.0f;
     public GameObject predictionPoint;
     public LineRenderer lineRenderer;
+    public float jumpForce = 10f;
 
     private Vector3 swingPoint;
     private Rigidbody rb;
@@ -17,6 +18,9 @@ public class ControllerInputRight : MonoBehaviour
     private Vector3 targetPoint; // world-space target point for the web hit
     private bool hasPointed;
 
+    private bool isGrounded;
+    public float groundCheckDistance = 0.4f;
+
     private void Start()
     {
         rb = vrCamParent.GetComponent<Rigidbody>();
@@ -24,6 +28,8 @@ public class ControllerInputRight : MonoBehaviour
 
     void Update()
     {
+        isGrounded = CheckGrounded();
+
         // Trigger
         float triggerValue = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger);
 
@@ -40,6 +46,9 @@ public class ControllerInputRight : MonoBehaviour
             else
             {
                 hasPointed = selectWebPoint();
+                stopSwing();
+                delLine();
+                moveThumb();
             }
         }
         else
@@ -50,6 +59,11 @@ public class ControllerInputRight : MonoBehaviour
             moveThumb();
         }
 
+        // A Button Right (OVRInput.Button.One) - Jump 
+        if (OVRInput.GetDown(OVRInput.Button.One) && isGrounded)
+        {
+            Jump();
+        }
 
         // Controller position and rotation
         //Vector3 position = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
@@ -148,5 +162,18 @@ public class ControllerInputRight : MonoBehaviour
     void delLine()
     {
         lineRenderer.enabled = false;
+    }
+
+    bool CheckGrounded()
+    {
+        // Check if there's something below the player
+        RaycastHit hit;
+        bool hasHit = Physics.Raycast(vrCamParent.transform.position, Vector3.down, out hit, groundCheckDistance);
+        return hasHit;
+    }
+
+    void Jump()
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 }

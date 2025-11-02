@@ -23,6 +23,8 @@ public class ControllerInput : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 120;
+        OVRManager.display.displayFrequency = 120.0f;
         rb = vrCamParent.GetComponent<Rigidbody>();
     }
 

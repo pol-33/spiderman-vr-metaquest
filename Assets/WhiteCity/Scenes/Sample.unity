@@ -5,9 +5,9 @@ OcclusionCullingSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_OcclusionBakeSettings:
-    smallestOccluder: 2
-    smallestHole: 1
-    backfaceThreshold: 50
+    smallestOccluder: 1
+    smallestHole: 0.8
+    backfaceThreshold: 100
   m_SceneGUID: 1a4e37fe1d5bcef448eaacca8ef81fad
   m_OcclusionCullingData: {fileID: 36300000, guid: b01fad527cb9c448abfb5019f4e47c09, type: 2}
 --- !u!104 &2
@@ -72340,18 +72340,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 365738979}
     m_Modifications:
     - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.899994
       objectReference: {fileID: 0}
@@ -72394,10 +72382,6 @@ PrefabInstance:
     - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_Name
       value: Tree_Summer (125)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -76588,18 +76572,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 365738979}
     m_Modifications:
     - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.899994
       objectReference: {fileID: 0}
@@ -76642,10 +76614,6 @@ PrefabInstance:
     - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_Name
       value: Tree_Summer (124)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -19012,6 +19012,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ground (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8368267720109388208, guid: ecf220814b89af742b24c75033c949d2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -95046,18 +95050,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 139388356}
     m_Modifications:
     - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.899994
       objectReference: {fileID: 0}
@@ -95100,10 +95092,6 @@ PrefabInstance:
     - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_Name
       value: Tree_Summer (103)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

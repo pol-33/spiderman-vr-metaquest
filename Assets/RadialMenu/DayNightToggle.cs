@@ -5,7 +5,7 @@ public class DayNightToggle : MonoBehaviour
     public Light directionalLight; // Assign your main directional light in Inspector
     
     [Header("Day Settings")]
-    public Color dayAmbientLight = new Color(0.7f, 0.7f, 0.7f);
+    public Color dayAmbientLight = new Color(0.41f, 0.46f, 0.56f);
     public float dayLightIntensity = 1f;
     public Color dayLightColor = Color.white;
     public Material daySkybox; // Assign your day skybox material

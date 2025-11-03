@@ -5,7 +5,7 @@ public class ControllerInput : MonoBehaviour
 {
     public GameObject vrCamParent;
     public GameObject vrEye;
-    public float moveSpeed = 8.0f;
+    public float moveSpeed = 3.0f;
     public GameObject predictionPoint;
     public LineRenderer lineRenderer;
     public float jumpForce = 10f;
@@ -19,7 +19,7 @@ public class ControllerInput : MonoBehaviour
     private bool hasPointed;
 
     private bool isGrounded;
-    public float groundCheckDistance = 0.4f;
+    public float groundCheckDistance = 4f;
 
     private void Start()
     {
@@ -94,7 +94,7 @@ public class ControllerInput : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction * thumbstick.y * 1 * Time.deltaTime);
+            rb.MovePosition(rb.position + direction * thumbstick.y * 0.8f * Time.deltaTime);
 
             distance = Vector3.Distance(rb.position, swingPoint);
 

@@ -32,6 +32,12 @@ public class ControllerInput : MonoBehaviour
     {
         isGrounded = CheckGrounded();
 
+        // A Button Right (OVRInput.Button.One) - Jump 
+        if (OVRInput.GetDown(OVRInput.Button.Three) && isGrounded)
+        {
+            Jump();
+        }
+
         // Trigger
         float triggerValue = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
 
@@ -59,12 +65,6 @@ public class ControllerInput : MonoBehaviour
             stopSwing();
             delLine();
             moveThumb();
-        }
-
-        // A Button Right (OVRInput.Button.One) - Jump 
-        if (OVRInput.GetDown(OVRInput.Button.Three) && isGrounded)
-        {
-            Jump();
         }
 
         // Controller position and rotation

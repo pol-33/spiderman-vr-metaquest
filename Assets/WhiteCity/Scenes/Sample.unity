@@ -10594,7 +10594,7 @@ MonoBehaviour:
   predictionPoint: {fileID: 38306000}
   lineRenderer: {fileID: 2106835262}
   jumpForce: 10
-  groundCheckDistance: 4
+  groundCheckDistance: 5
 --- !u!1001 &184772835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28750,7 +28750,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 523426159}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 2
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -107176,7 +107176,7 @@ MonoBehaviour:
   predictionPoint: {fileID: 2092339975}
   lineRenderer: {fileID: 2046266132}
   jumpForce: 10
-  groundCheckDistance: 4
+  groundCheckDistance: 5
 --- !u!1001 &1950902817
 PrefabInstance:
   m_ObjectHideFlags: 0

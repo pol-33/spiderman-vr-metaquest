@@ -114,7 +114,7 @@ public class RadialSelection : MonoBehaviour
     public void SpawnRadialPart()
     {
         radialPartCanvas.gameObject.SetActive(true);
-        radialPartCanvas.position = handTransform.position;
+        radialPartCanvas.position = handTransform.position + handTransform.forward * 5;
         radialPartCanvas.rotation = handTransform.rotation;
 
         foreach (GameObject part in spawnedParts)

@@ -107,7 +107,7 @@ public class ControllerInputRight : MonoBehaviour
     bool selectWebPoint()
     {
         RaycastHit hit;
-        bool hasHit = Physics.Raycast(transform.position, transform.forward, out hit, 50);
+        bool hasHit = Physics.Raycast(transform.position, transform.forward, out hit, 100);
         if (hasHit)
         {
             // Debug.Log("Hit: " + hit.collider.name);
@@ -123,7 +123,7 @@ public class ControllerInputRight : MonoBehaviour
         else
         {
             // store a fallback world-space point
-            targetPoint = transform.position + transform.forward * 50;
+            targetPoint = transform.position + transform.forward * 100;
             predictionPoint.transform.position = targetPoint;
             predictionPoint.GetComponent<Renderer>().material.color = Color.red;
         }

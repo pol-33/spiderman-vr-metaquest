@@ -28581,6 +28581,7 @@ GameObject:
   - component: {fileID: 523426166}
   - component: {fileID: 523426165}
   - component: {fileID: 523426167}
+  - component: {fileID: 523426168}
   m_Layer: 0
   m_Name: '[BuildingBlock] Camera Rig'
   m_TagString: Untagged
@@ -28807,6 +28808,19 @@ MonoBehaviour:
   boundaryCenter: {x: 0, y: 200, z: 0}
   boundarySize: {x: 600, y: 400, z: 600}
   playerTransform: {fileID: 523426164}
+--- !u!114 &523426168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523426159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c68fff6e5461e34daf4d0b601cb3c76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  targetPosition: {x: 0, y: 50, z: 0}
 --- !u!1 &527622672
 GameObject:
   m_ObjectHideFlags: 0
@@ -60889,7 +60903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   spawnButton: 2
-  numberOfRadialParts: 3
+  numberOfRadialParts: 4
   radialPartPrefab: {fileID: 1900436641779749235, guid: a5e158bb626254887b101afa702f5b51, type: 3}
   radialPartCanvas: {fileID: 608142744}
   angleBetweenParts: 10
@@ -60925,10 +60939,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 523426168}
+        m_TargetAssemblyTypeName: Reset, Assembly-CSharp
+        m_MethodName: resetCameraPos
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   partLabels:
   - Exit Menu
   - Fireworks
   - Day/Night
+  - Reset Character
 --- !u!4 &1121378027
 Transform:
   m_ObjectHideFlags: 0
@@ -85388,18 +85417,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 365738979}
     m_Modifications:
     - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005503507312534323, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.899994
       objectReference: {fileID: 0}
@@ -85442,10 +85459,6 @@ PrefabInstance:
     - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
       propertyPath: m_Name
       value: Tree_Summer (114)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6911586025328288604, guid: f659c189d60e8544b987a945dea54c3b, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

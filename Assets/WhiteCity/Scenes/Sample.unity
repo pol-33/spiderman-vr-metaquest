@@ -27146,7 +27146,7 @@ GameObject:
   - component: {fileID: 493411476}
   - component: {fileID: 493411475}
   m_Layer: 0
-  m_Name: Ground
+  m_Name: Streets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27177,7 +27177,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 710e4b660b5be7243a65dcba43c58953, type: 2}
+  - {fileID: 2100000, guid: 45ce9bbe936e94216b9b7a7e4b42909a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46853,11 +46853,11 @@ MonoBehaviour:
   dayAmbientLight: {r: 0.41, g: 0.46, b: 0.56, a: 1}
   dayLightIntensity: 1
   dayLightColor: {r: 1, g: 1, b: 1, a: 1}
-  daySkybox: {fileID: 2100000, guid: da976b1a4f7ebb949b0f71341e4f1821, type: 2}
+  daySkybox: {fileID: 2100000, guid: 3e56423e1fe71f94ea97f5bb2004a7e6, type: 2}
   nightAmbientLight: {r: 0.1, g: 0.1, b: 0.15, a: 1}
   nightLightIntensity: 0.5
   nightLightColor: {r: 0.6, g: 0.6, b: 0.8, a: 1}
-  nightSkybox: {fileID: 2100000, guid: 5ba172cd3918d7c44aa6d04446119a00, type: 2}
+  nightSkybox: {fileID: 2100000, guid: 97637a2a763b7f24b8da4e139e4144ca, type: 2}
 --- !u!1 &844511783
 GameObject:
   m_ObjectHideFlags: 0
@@ -107593,6 +107593,7 @@ MonoBehaviour:
   predictionPoint: {fileID: 2092339975}
   lineRenderer: {fileID: 2046266132}
   jumpForce: 10
+  locomotionProvider: {fileID: 747675967}
   groundCheckDistance: 5
 --- !u!1001 &1950902817
 PrefabInstance:

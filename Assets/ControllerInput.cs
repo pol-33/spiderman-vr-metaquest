@@ -10,6 +10,10 @@ public class ControllerInput : MonoBehaviour
     public LineRenderer lineRenderer;
     public float jumpForce = 10f;
 
+    public CustomLocomotionProvider locomotionProvider;
+
+    private bool wasMoving = false;
+
     private Vector3 swingPoint;
     private Rigidbody rb;
     private SpringJoint joint;
@@ -67,12 +71,24 @@ public class ControllerInput : MonoBehaviour
             moveThumb();
         }
 
+        UpdateLocomotionProvider();
+
         // Controller position and rotation
         //Vector3 position = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
         //Debug.Log($"ControllerPosition: {position}");
 
         //Quaternion rotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
         //Debug.Log($"ControllerRotation: {rotation}");
+    }
+    void UpdateLocomotionProvider()
+    {
+        bool isMovingNow = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).magnitude > 0.1f || joint != null;
+
+        if (isMovingNow != wasMoving)
+        {
+            locomotionProvider.SetMoving(isMovingNow, true); // true = left controller
+            wasMoving = isMovingNow;
+        }
     }
     void moveThumb()
     {

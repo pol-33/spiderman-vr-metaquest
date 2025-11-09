@@ -7,6 +7,8 @@ public class CustomLocomotionProvider : LocomotionProvider
     private bool leftControllerMoving = false;
     private bool rightControllerMoving = false;
 
+    private bool locomotionEnabled = true;
+
     public void SetMoving(bool moving, bool isLeftController)
     {
         // Update the appropriate controller state
@@ -15,8 +17,8 @@ public class CustomLocomotionProvider : LocomotionProvider
         else
             rightControllerMoving = moving;
 
-        // Locomotion should be active if EITHER controller is moving
-        bool shouldBeActive = leftControllerMoving || rightControllerMoving;
+        // Locomotion should be active if EITHER controller is moving AND locomotion is enabled
+        bool shouldBeActive = (leftControllerMoving || rightControllerMoving) && locomotionEnabled;
 
         if (shouldBeActive == isLocomotionActive)
             return;
@@ -35,4 +37,16 @@ public class CustomLocomotionProvider : LocomotionProvider
     }
 
     public bool IsMoving => isLocomotionActive;
+
+    public void ToggleLocomotionEnabled()
+    {
+        locomotionEnabled = !locomotionEnabled;
+        
+        // If we're disabling locomotion while it's active, end it immediately
+        if (!locomotionEnabled && isLocomotionActive)
+        {
+            isLocomotionActive = false;
+            TryEndLocomotion();
+        }
+    }
 }

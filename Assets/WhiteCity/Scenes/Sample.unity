@@ -61246,7 +61246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   spawnButton: 2
-  numberOfRadialParts: 4
+  numberOfRadialParts: 5
   radialPartPrefab: {fileID: 1900436641779749235, guid: a5e158bb626254887b101afa702f5b51, type: 3}
   radialPartCanvas: {fileID: 608142744}
   angleBetweenParts: 10
@@ -61296,11 +61296,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 747675967}
+        m_TargetAssemblyTypeName: CustomLocomotionProvider, Assembly-CSharp
+        m_MethodName: ToggleLocomotionEnabled
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   partLabels:
   - Exit Menu
   - Fireworks
   - Day/Night
   - Reset Character
+  - Tunnelling On/Off
 --- !u!4 &1121378027
 Transform:
   m_ObjectHideFlags: 0

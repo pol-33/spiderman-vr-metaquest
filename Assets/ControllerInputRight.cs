@@ -1,5 +1,7 @@
 using Oculus.Interaction;
 using UnityEngine;
+using System.Collections;
+
 
 public class ControllerInputRight : MonoBehaviour
 {
@@ -24,6 +26,9 @@ public class ControllerInputRight : MonoBehaviour
 
     private bool isGrounded;
     public float groundCheckDistance = 4f;
+
+    public float pullSpeed = 500;
+    public float strafeSpeed = 10;
 
     private void Start()
     {
@@ -52,6 +57,7 @@ public class ControllerInputRight : MonoBehaviour
             {
                 startSwing();
                 drawLine();
+                moveThumb();
                 predictionPoint.SetActive(false);
                 moveLine();
             }
@@ -90,19 +96,36 @@ public class ControllerInputRight : MonoBehaviour
             wasMoving = isMovingNow;
         }
     }
+
     void moveThumb()
     {
-        // Thumbstick
         Vector2 thumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-        if (thumbstick.magnitude > 0.1f)
-        {
-            Vector3 movement = (thumbstick.y * vrEye.transform.forward + thumbstick.x * vrEye.transform.right) * moveSpeed * Time.deltaTime;
-            //vrCamParent.transform.Translate(movement);
-            Vector3 Pos = rb.position + movement;
-            rb.MovePosition(Pos);  
 
+        if (thumbstick.magnitude > 0.1f && joint == null)
+        {
+            Vector3 direction = (vrEye.transform.forward * thumbstick.y + vrEye.transform.right * thumbstick.x).normalized;
+
+            if (isGrounded)
+            {
+                // Use MovePosition for grounded walking (smooth and controlled)
+                Vector3 movement = direction * moveSpeed * Time.deltaTime;
+                Vector3 Pos = rb.position + movement;
+                rb.MovePosition(Pos);
+            }
+            else
+            {
+                // Use AddForce in the air to keep momentum and allow air control
+                rb.AddForce(direction * moveSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+            }
+        }
+
+        // Strafing while swinging
+        if (joint != null)
+        {
+            rb.AddForce(thumbstick.x * vrEye.transform.right * strafeSpeed);
         }
     }
+
     void moveLine()
     {
         Vector2 thumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
@@ -110,12 +133,22 @@ public class ControllerInputRight : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction * thumbstick.y * 0.8f * Time.deltaTime);
+            rb.MovePosition(rb.position + direction * 0.1f * Time.deltaTime);
+            rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime);
 
             distance = Vector3.Distance(rb.position, swingPoint);
-
+            if (thumbstick.y > 0)
+            {
+                joint.maxDistance = distance * 0.8f;
+                joint.minDistance = distance * 0.2f;
+            }
+            else
+            {
+                joint.maxDistance = distance * 1.8f;
+                joint.minDistance = distance * 1.2f;
+            }
             // The distance grapple will try to keep from grapple point. 
-            joint.maxDistance = distance;
+
         }
     }
 
@@ -123,7 +156,10 @@ public class ControllerInputRight : MonoBehaviour
     bool selectWebPoint()
     {
         RaycastHit hit;
-        bool hasHit = Physics.Raycast(transform.position, transform.forward, out hit, 100);
+        int layerMask = ~LayerMask.GetMask("Player"); // ignore player layer
+        Vector3 start = transform.position + transform.forward * 0.2f;
+
+        bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
             // Debug.Log("Hit: " + hit.collider.name);
@@ -160,8 +196,8 @@ public class ControllerInputRight : MonoBehaviour
         joint.maxDistance = distance;
 
         joint.spring = 4.5f;
-        joint.damper = 7f;
-        joint.massScale = 4.5f;
+        joint.damper = 3f;
+        joint.massScale = 2.5f;
     }
 
     void stopSwing()
@@ -186,12 +222,43 @@ public class ControllerInputRight : MonoBehaviour
     {
         // Check if there's something below the player
         RaycastHit hit;
-        bool hasHit = Physics.Raycast(vrCamParent.transform.position, Vector3.down, out hit, groundCheckDistance);
-        return hasHit;
+        bool hasHitDown = Physics.Raycast(vrCamParent.transform.position, Vector3.down, out hit, groundCheckDistance);
+        bool hasHitFront = CheckFrontHit();
+        return hasHitDown || hasHitFront;
     }
+
+    bool CheckFrontHit()
+    {
+        RaycastHit hit;
+        int layerMask = ~LayerMask.GetMask("Player"); // ignore player layer
+        Vector3 start = vrEye.transform.position + vrEye.transform.forward * 0.2f;
+
+        bool hasHitFront = Physics.Raycast(start, vrEye.transform.forward, out hit, groundCheckDistance * 1.3f, layerMask);
+        //Debug.DrawRay(start, vrEye.transform.forward * groundCheckDistance * 1.3f, hasHitFront ? Color.green : Color.red);
+
+        return hasHitFront;
+    }
+
+
 
     void Jump()
     {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        if (CheckFrontHit())
+        {
+            //rb.AddForce(Vector3.back * jumpForce / 8, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce * 1.2f, ForceMode.Impulse);
+            // Start coroutine to add forward force after 1 second
+            //StartCoroutine(AddForwardForceAfterDelay(0.5f));
+        }
+        else
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    IEnumerator AddForwardForceAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        rb.AddForce(transform.forward * jumpForce * 1.2f, ForceMode.Impulse);
     }
 }

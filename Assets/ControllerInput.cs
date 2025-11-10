@@ -91,9 +91,11 @@ public class ControllerInput : MonoBehaviour
             cat.transform.position = transform.position;
             cat.transform.rotation = transform.rotation;
         }
+        
         float grabValue = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger);
         if(grabValue > 0.6)
         {
+            cat.transform.localScale = Vector3.one * 6f;
             cat.GetComponent<Rigidbody>().useGravity = true;
             cat = null;
         }

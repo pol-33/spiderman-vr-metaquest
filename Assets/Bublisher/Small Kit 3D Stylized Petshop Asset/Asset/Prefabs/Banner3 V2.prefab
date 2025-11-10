@@ -98,6 +98,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4376868512803884883}
+  - component: {fileID: 7719211721168276047}
   m_Layer: 0
   m_Name: Banner3 V2
   m_TagString: Untagged
@@ -122,6 +123,28 @@ Transform:
   - {fileID: 4162388738825548146}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &7719211721168276047
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032430400393762281}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2779006776632157807, guid: 1da7fbe6aebd2214e84f30a1f6187524, type: 3}
 --- !u!1 &4249292176244318352
 GameObject:
   m_ObjectHideFlags: 0

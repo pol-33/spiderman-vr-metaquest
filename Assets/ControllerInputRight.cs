@@ -7,7 +7,7 @@ public class ControllerInputRight : MonoBehaviour
 {
     public GameObject vrCamParent;
     public GameObject vrEye;
-    public float moveSpeed = 3.0f;
+    public float moveSpeed = 15.0f;
     public GameObject predictionPoint;
     public LineRenderer lineRenderer;
     public float jumpForce = 10f;
@@ -19,18 +19,23 @@ public class ControllerInputRight : MonoBehaviour
     private Vector3 swingPoint;
     private Rigidbody rb;
     private SpringJoint joint;
+    private GameObject cat;
+    private FixedJoint catJoint;
     private float distance;
 
     private Vector3 targetPoint; // world-space target point for the web hit
     private bool hasPointed;
-
-    private GameObject cat;
 
     private bool isGrounded;
     public float groundCheckDistance = 4f;
 
     public float pullSpeed = 500;
     public float strafeSpeed = 10;
+
+
+    public float maxDistance = 0;
+    public float pullStrength = 10;
+    public bool useSpring = false;
 
     private void Start()
     {
@@ -70,6 +75,7 @@ public class ControllerInputRight : MonoBehaviour
                 delLine();
                 moveThumb();
             }
+
             selectCat();
         }
         else
@@ -80,21 +86,21 @@ public class ControllerInputRight : MonoBehaviour
             moveThumb();
         }
 
-        
-
         if (cat != null)
         {
             cat.transform.position = transform.position;
             cat.transform.rotation = transform.rotation;
         }
+
         float grabValue = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger);
         if (grabValue > 0.6)
         {
+            cat.transform.localScale = Vector3.one * 6f;
             cat.GetComponent<Rigidbody>().useGravity = true;
-            cat.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-            cat.transform.localScale *= 2;
             cat = null;
         }
+
+        if (OVRInput.GetDown(OVRInput.Button.One))
 
         UpdateLocomotionProvider();
 
@@ -104,6 +110,11 @@ public class ControllerInputRight : MonoBehaviour
 
         //Quaternion rotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
         //Debug.Log($"ControllerRotation: {rotation}");
+        Vector3 dir = targetPoint - rb.position;
+        if (distance > maxDistance)
+        {
+            //rb.AddForce(dir.normalized * pullStrength, ForceMode.Acceleration);
+        }
     }
     void UpdateLocomotionProvider()
     {
@@ -152,22 +163,21 @@ public class ControllerInputRight : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction.normalized * 0.1f * Time.deltaTime);
-            rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime*2);
+            rb.MovePosition(rb.position + direction.normalized * Time.deltaTime);
+            rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime);
 
             distance = Vector3.Distance(rb.position, swingPoint);
-            if (thumbstick.y > 0)
-            {
+            if (thumbstick.y > 0) {
                 joint.maxDistance = distance * 0.8f;
-                joint.minDistance = distance * 0.2f;
+                joint.minDistance = 0;// distance * 0.2f;
             }
             else
             {
                 joint.maxDistance = distance * 1.8f;
-                joint.minDistance = distance * 1.2f;
+                joint.minDistance = 0;//distance * 1.2f;
             }
             // The distance grapple will try to keep from grapple point. 
-
+            
         }
     }
 

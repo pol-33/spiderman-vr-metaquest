@@ -19,6 +19,7 @@ public class ControllerInput : MonoBehaviour
     private Vector3 swingPoint;
     private Rigidbody rb;
     private SpringJoint joint;
+    private GameObject cat;
     private float distance;
 
     private Vector3 targetPoint; // world-space target point for the web hit
@@ -73,6 +74,8 @@ public class ControllerInput : MonoBehaviour
                 delLine();
                 moveThumb();
             }
+
+            selectCat();
         }
         else
         {
@@ -81,6 +84,13 @@ public class ControllerInput : MonoBehaviour
             delLine();
             moveThumb();
         }
+
+        if (cat != null)
+        {
+            //cat.transform.position = transform.position;
+        }
+
+        if(OVRInput.GetDown(OVRInput.Button.Three))
 
         UpdateLocomotionProvider();
 
@@ -125,7 +135,7 @@ public class ControllerInput : MonoBehaviour
             else
             {
                 // Use AddForce in the air to keep momentum and allow air control
-                rb.AddForce(direction * moveSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
             }
         }
 
@@ -158,6 +168,20 @@ public class ControllerInput : MonoBehaviour
             }
             // The distance grapple will try to keep from grapple point. 
             
+        }
+    }
+
+    void selectCat()
+    {
+        RaycastHit hit;
+        int layerMask = LayerMask.GetMask("Cat"); // ignore player layer
+        Vector3 start = transform.position + transform.forward * 0.2f;
+        bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
+        if (hasHit)
+        {
+            cat = hit.collider.gameObject;
+
+
         }
     }
 

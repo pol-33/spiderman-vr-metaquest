@@ -115,7 +115,7 @@ public class ControllerInputRight : MonoBehaviour
             else
             {
                 // Use AddForce in the air to keep momentum and allow air control
-                rb.AddForce(direction * moveSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
             }
         }
 
@@ -133,8 +133,8 @@ public class ControllerInputRight : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction * 0.1f * Time.deltaTime);
-            rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime);
+            rb.MovePosition(rb.position + direction.normalized * 0.1f * Time.deltaTime);
+            rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime*2);
 
             distance = Vector3.Distance(rb.position, swingPoint);
             if (thumbstick.y > 0)

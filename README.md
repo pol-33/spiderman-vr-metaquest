@@ -1,2 +1,4 @@
 # spiderman-vr-metaquest
-SGI project
+
+SGI project VR
+

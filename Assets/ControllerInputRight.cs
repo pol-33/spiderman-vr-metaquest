@@ -24,6 +24,8 @@ public class ControllerInputRight : MonoBehaviour
     private Vector3 targetPoint; // world-space target point for the web hit
     private bool hasPointed;
 
+    private GameObject cat;
+
     private bool isGrounded;
     public float groundCheckDistance = 4f;
 
@@ -68,6 +70,7 @@ public class ControllerInputRight : MonoBehaviour
                 delLine();
                 moveThumb();
             }
+            selectCat();
         }
         else
         {
@@ -75,6 +78,22 @@ public class ControllerInputRight : MonoBehaviour
             stopSwing();
             delLine();
             moveThumb();
+        }
+
+        
+
+        if (cat != null)
+        {
+            cat.transform.position = transform.position;
+            cat.transform.rotation = transform.rotation;
+        }
+        float grabValue = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger);
+        if (grabValue > 0.6)
+        {
+            cat.GetComponent<Rigidbody>().useGravity = true;
+            cat.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+            cat.transform.localScale *= 2;
+            cat = null;
         }
 
         UpdateLocomotionProvider();
@@ -149,6 +168,19 @@ public class ControllerInputRight : MonoBehaviour
             }
             // The distance grapple will try to keep from grapple point. 
 
+        }
+    }
+
+    void selectCat()
+    {
+        RaycastHit hit;
+        int layerMask = LayerMask.GetMask("Cat"); // ignore player layer
+        Vector3 start = transform.position + transform.forward * 0.2f;
+        bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
+        if (hasHit)
+        {
+            cat = hit.collider.gameObject;
+            cat.transform.localScale = Vector3.one;
         }
     }
 

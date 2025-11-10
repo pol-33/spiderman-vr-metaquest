@@ -7,7 +7,7 @@ public class ControllerInput : MonoBehaviour
 {
     public GameObject vrCamParent;
     public GameObject vrEye;
-    public float moveSpeed = 3.0f;
+    public float moveSpeed = 15.0f;
     public GameObject predictionPoint;
     public LineRenderer lineRenderer;
     public float jumpForce = 10f;
@@ -20,6 +20,7 @@ public class ControllerInput : MonoBehaviour
     private Rigidbody rb;
     private SpringJoint joint;
     private GameObject cat;
+    private FixedJoint catJoint;
     private float distance;
 
     private Vector3 targetPoint; // world-space target point for the web hit
@@ -87,10 +88,17 @@ public class ControllerInput : MonoBehaviour
 
         if (cat != null)
         {
-            //cat.transform.position = transform.position;
+            cat.transform.position = transform.position;
+            cat.transform.rotation = transform.rotation;
+        }
+        float grabValue = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger);
+        if(grabValue > 0.6)
+        {
+            cat.GetComponent<Rigidbody>().useGravity = true;
+            cat = null;
         }
 
-        if(OVRInput.GetDown(OVRInput.Button.Three))
+        if (OVRInput.GetDown(OVRInput.Button.Three))
 
         UpdateLocomotionProvider();
 
@@ -153,18 +161,18 @@ public class ControllerInput : MonoBehaviour
         {
             // use stored world-space targetPoint so it doesn't move with the controller
             Vector3 direction = targetPoint - rb.position;
-            rb.MovePosition(rb.position + direction  * 0.1f * Time.deltaTime);
+            rb.MovePosition(rb.position + direction.normalized * Time.deltaTime);
             rb.AddForce(direction.normalized * pullSpeed * thumbstick.y * Time.deltaTime);
 
             distance = Vector3.Distance(rb.position, swingPoint);
             if (thumbstick.y > 0) {
                 joint.maxDistance = distance * 0.8f;
-                joint.minDistance = distance * 0.2f;
+                joint.minDistance = 0;// distance * 0.2f;
             }
             else
             {
                 joint.maxDistance = distance * 1.8f;
-                joint.minDistance = distance * 1.2f;
+                joint.minDistance = 0;//distance * 1.2f;
             }
             // The distance grapple will try to keep from grapple point. 
             
@@ -180,8 +188,7 @@ public class ControllerInput : MonoBehaviour
         if (hasHit)
         {
             cat = hit.collider.gameObject;
-
-
+            cat.transform.localScale = Vector3.one;
         }
     }
 

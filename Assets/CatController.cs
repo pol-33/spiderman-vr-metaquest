@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class CatController : MonoBehaviour
 {
-    private PetAreaController area;
+    public PetAreaController area;
     private Rigidbody rb;
     public float moveSpeed = 0.5f;
+    private Vector3 moveDir = Vector3.zero;
 
     private void Start()
     {
@@ -14,6 +15,9 @@ public class CatController : MonoBehaviour
     public void SetInsideArea(PetAreaController petArea)
     {
         area = petArea;
+        Vector3 randomTarget = area.GetRandomPointInside();
+        moveDir = (randomTarget - transform.position).normalized;
+        rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
     }
 
     private void Update()
@@ -54,9 +58,10 @@ public class CatController : MonoBehaviour
             if (Random.value < 0.01f)
             {
                 Vector3 randomTarget = area.GetRandomPointInside();
-                Vector3 moveDir = (randomTarget - transform.position).normalized;
-                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
+                moveDir = (randomTarget - transform.position).normalized;
+                
             }
+            rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
         }
     }
 }

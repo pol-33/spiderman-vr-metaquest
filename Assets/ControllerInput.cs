@@ -45,6 +45,8 @@ public class ControllerInput : MonoBehaviour
     private GameObject lastHighlightedCat = null;
     private Color[] originalCatColors = null;
 
+    bool speedCap = false;
+
     private void Start()
     {
         Application.targetFrameRate = 120;
@@ -112,24 +114,34 @@ public class ControllerInput : MonoBehaviour
         {
             if (!turning)
             {
+                Vector2 contVec = new Vector2(transform.localPosition.x, transform.localPosition.z);
+                float newAngle = Vector2.Angle(contVec, new Vector2(1, 0));
+                //if (newAngle > 5) newAngle = 0;
+                if ((contVec).y < 0) newAngle = -newAngle;
+                savedAngle = newAngle;
                 turning = true;
                 Debug.Log("rotating");
             }
-            //turnCamera();  NO VA BIEN
+            turnCamera();
         }
         else if (grabValue < 0.6 && cat == null)
         {
             if (turning)
             {
-                Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
-                Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
-                float newAngle = Vector2.Angle(contVec - camVec, new Vector2(1, 0));
-                if ((contVec - camVec).y < 0) newAngle = -newAngle;
-                savedAngle = newAngle;
                 turning = false;
             }
-            
+
         }
+
+        if(speedCap)
+        {
+            Vector3 velocity = rb.linearVelocity;
+            if (velocity.magnitude > maxAirSpeed)
+            {
+                rb.linearVelocity = velocity.normalized * maxAirSpeed;
+            }
+        }
+
         // Update locomotion provider state (trigger the tunneling vignette)
         UpdateLocomotionProvider();
     }
@@ -172,16 +184,17 @@ public class ControllerInput : MonoBehaviour
                 // Use AddForce in the air to keep momentum and allow air control
                 // Only add force if we haven't reached max air speed
                 Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-                
-                if (horizontalVelocity.magnitude < maxAirSpeed)
+
+                if (Mathf.Abs(horizontalVelocity.x) < maxAirSpeed)
                 {
-                    rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                    rb.AddForce(new Vector3(direction.x, 0, 0) * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
                 }
-                else
+                if (Mathf.Abs(horizontalVelocity.z) < maxAirSpeed)
                 {
+                    rb.AddForce(new Vector3(0, 0, direction.z) * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
                     // Clamp the horizontal velocity to max air speed
-                    Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
-                    rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
+                    //Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
+                    //rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
                 }
             }
         }
@@ -419,7 +432,7 @@ public class ControllerInput : MonoBehaviour
             Vector3 velocity = rb.linearVelocity;
             if (velocity.magnitude > maxSwingReleaseSpeed)
             {
-                rb.linearVelocity = velocity.normalized * maxSwingReleaseSpeed;
+                //rb.linearVelocity = velocity.normalized * maxSwingReleaseSpeed;
             }
         }
         
@@ -493,20 +506,18 @@ public class ControllerInput : MonoBehaviour
             rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
         }
     }
-
     void turnCamera()
     {
-        Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
-        Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
-        float newAngle = Vector2.Angle(contVec-camVec, new Vector2(1, 0));
+        Vector2 contVec = new Vector2(transform.localPosition.x, transform.localPosition.z);
+        float newAngle = Vector2.Angle(contVec, new Vector2(1, 0));
         //if (newAngle > 5) newAngle = 0;
-        if ((contVec - camVec).y < 0) newAngle = -newAngle;
+        if ((contVec).y < 0) newAngle = -newAngle;
         float rotationAngle = newAngle - savedAngle;
-        
+
         Debug.Log(rotationAngle);
 
         vrCamParent.transform.eulerAngles = vrCamParent.transform.eulerAngles + new Vector3(0, rotationAngle, 0);
-        savedAngle = 0;
+        savedAngle = newAngle;
     }
 
     // IEnumerator AddForwardForceAfterDelay(float delay)
@@ -514,4 +525,9 @@ public class ControllerInput : MonoBehaviour
     //     yield return new WaitForSeconds(delay);
     //     rb.AddForce(transform.forward * jumpForce * 1.2f, ForceMode.Impulse);
     // }
+
+    public void toggleSpeedCap()
+    {
+        speedCap = !speedCap;
+    }
 }

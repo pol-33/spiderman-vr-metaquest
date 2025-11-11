@@ -45,6 +45,8 @@ public class ControllerInputRight : MonoBehaviour
     private GameObject lastHighlightedCat = null;
     private Color[] originalCatColors = null;
 
+    bool speedCap = false;
+
     private void Start()
     {
         Application.targetFrameRate = 120;
@@ -54,7 +56,10 @@ public class ControllerInputRight : MonoBehaviour
 
     void Update()
     {
+        bool wasGrounded = isGrounded;
         isGrounded = CheckGrounded();
+
+        //if(isGrounded && !wasGrounded) rb.linearVelocity = Vector3.zero;
 
         // A Button Right (OVRInput.Button.One) - Jump 
         if (OVRInput.GetDown(OVRInput.Button.One) && isGrounded)
@@ -112,24 +117,34 @@ public class ControllerInputRight : MonoBehaviour
         {
             if (!turning)
             {
+                Vector2 contVec = new Vector2(transform.localPosition.x, transform.localPosition.z);
+                float newAngle = Vector2.Angle(contVec, new Vector2(1, 0));
+                //if (newAngle > 5) newAngle = 0;
+                if ((contVec).y < 0) newAngle = -newAngle;
+                savedAngle = newAngle;
                 turning = true;
                 Debug.Log("rotating");
             }
-            //turnCamera();  NO VA BIEN
+            turnCamera();
         }
         else if (grabValue < 0.6 && cat == null)
         {
             if (turning)
             {
-                Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
-                Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
-                float newAngle = Vector2.Angle(contVec - camVec, new Vector2(1, 0));
-                if ((contVec - camVec).y < 0) newAngle = -newAngle;
-                savedAngle = newAngle;
                 turning = false;
             }
             
         }
+
+        if(speedCap)
+        {
+            Vector3 velocity = rb.linearVelocity;
+            if (velocity.magnitude > maxAirSpeed)
+            {
+                rb.linearVelocity = velocity.normalized * maxAirSpeed;
+            }
+        }
+
         // Update locomotion provider state (trigger the tunneling vignette)
         UpdateLocomotionProvider();
     }
@@ -137,7 +152,7 @@ public class ControllerInputRight : MonoBehaviour
     void UpdateLocomotionProvider()
     {
         // Check if moving via thumbstick input
-        bool thumbstickMoving = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).magnitude > 0.1f;
+        bool thumbstickMoving = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).magnitude > 0.1f || (turning);
         
         // Check if player has significant velocity (moving from momentum/swing/jump)
         bool hasVelocity = rb.linearVelocity.magnitude > 2f;
@@ -173,15 +188,16 @@ public class ControllerInputRight : MonoBehaviour
                 // Only add force if we haven't reached max air speed
                 Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
                 
-                if (horizontalVelocity.magnitude < maxAirSpeed)
+                if (Mathf.Abs(horizontalVelocity.x) < maxAirSpeed)
                 {
-                    rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                    rb.AddForce(new Vector3(direction.x, 0, 0) * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
                 }
-                else
+                if (Mathf.Abs(horizontalVelocity.z) < maxAirSpeed)
                 {
+                    rb.AddForce(new Vector3(0, 0, direction.z) * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
                     // Clamp the horizontal velocity to max air speed
-                    Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
-                    rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
+                    //Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
+                    //rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
                 }
             }
         }
@@ -210,7 +226,7 @@ public class ControllerInputRight : MonoBehaviour
             }
             else
             {
-                joint.maxDistance = distance * 1.8f;
+                joint.maxDistance = distance * 1.1f;
                 joint.minDistance = 0;//distance * 1.2f;
             }
             // The distance grapple will try to keep from grapple point. 
@@ -419,7 +435,7 @@ public class ControllerInputRight : MonoBehaviour
             Vector3 velocity = rb.linearVelocity;
             if (velocity.magnitude > maxSwingReleaseSpeed)
             {
-                rb.linearVelocity = velocity.normalized * maxSwingReleaseSpeed;
+                //rb.linearVelocity = velocity.normalized * maxSwingReleaseSpeed;
             }
         }
         
@@ -467,7 +483,7 @@ public class ControllerInputRight : MonoBehaviour
             // Jump off wall - limit the upward force to prevent infinite speed
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z); // Reset vertical velocity
             rb.AddForce(Vector3.up * jumpForce * 1.2f, ForceMode.Impulse);
-            
+
             // Clamp horizontal velocity after jump
             ClampHorizontalVelocity();
         }
@@ -476,7 +492,7 @@ public class ControllerInputRight : MonoBehaviour
             // Normal jump - reset vertical velocity first
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            
+
             // Clamp horizontal velocity after jump
             ClampHorizontalVelocity();
         }
@@ -486,7 +502,7 @@ public class ControllerInputRight : MonoBehaviour
     {
         // Clamp horizontal velocity to prevent excessive speed after jumping
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        
+
         if (horizontalVelocity.magnitude > maxAirSpeed)
         {
             Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
@@ -496,17 +512,16 @@ public class ControllerInputRight : MonoBehaviour
 
     void turnCamera()
     {
-        Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
-        Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
-        float newAngle = Vector2.Angle(contVec-camVec, new Vector2(1, 0));
+        Vector2 contVec = new Vector2(transform.localPosition.x, transform.localPosition.z);
+        float newAngle = Vector2.Angle(contVec, new Vector2(1, 0));
         //if (newAngle > 5) newAngle = 0;
-        if ((contVec - camVec).y < 0) newAngle = -newAngle;
+        if ((contVec).y < 0) newAngle = -newAngle;
         float rotationAngle = newAngle - savedAngle;
         
         Debug.Log(rotationAngle);
 
         vrCamParent.transform.eulerAngles = vrCamParent.transform.eulerAngles + new Vector3(0, rotationAngle, 0);
-        savedAngle = 0;
+        savedAngle = newAngle;
     }
 
     // IEnumerator AddForwardForceAfterDelay(float delay)
@@ -514,4 +529,9 @@ public class ControllerInputRight : MonoBehaviour
     //     yield return new WaitForSeconds(delay);
     //     rb.AddForce(transform.forward * jumpForce * 1.2f, ForceMode.Impulse);
     // }
+
+    public void toggleSpeedCap()
+    {
+        speedCap = !speedCap;
+    }
 }

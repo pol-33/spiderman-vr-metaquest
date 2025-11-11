@@ -31,6 +31,7 @@ public class ControllerInputRight : MonoBehaviour
 
     public float pullSpeed = 500;
     public float strafeSpeed = 10;
+    public float maxAirSpeed = 20f; // Maximum speed in the air
 
 
     public float maxDistance = 0;
@@ -143,7 +144,19 @@ public class ControllerInputRight : MonoBehaviour
             else
             {
                 // Use AddForce in the air to keep momentum and allow air control
-                rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                // Only add force if we haven't reached max air speed
+                Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+                
+                if (horizontalVelocity.magnitude < maxAirSpeed)
+                {
+                    rb.AddForce(direction * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
+                }
+                else
+                {
+                    // Clamp the horizontal velocity to max air speed
+                    Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
+                    rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
+                }
             }
         }
 
@@ -327,20 +340,21 @@ public class ControllerInputRight : MonoBehaviour
     {
         if (CheckFrontHit())
         {
-            //rb.AddForce(Vector3.back * jumpForce / 8, ForceMode.Impulse);
+            // Jump off wall - limit the upward force to prevent infinite speed
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z); // Reset vertical velocity
             rb.AddForce(Vector3.up * jumpForce * 1.2f, ForceMode.Impulse);
-            // Start coroutine to add forward force after 1 second
-            //StartCoroutine(AddForwardForceAfterDelay(0.5f));
         }
         else
         {
+            // Normal jump - reset vertical velocity first
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    IEnumerator AddForwardForceAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        rb.AddForce(transform.forward * jumpForce * 1.2f, ForceMode.Impulse);
-    }
+    // IEnumerator AddForwardForceAfterDelay(float delay)
+    // {
+    //     yield return new WaitForSeconds(delay);
+    //     rb.AddForce(transform.forward * jumpForce * 1.2f, ForceMode.Impulse);
+    // }
 }

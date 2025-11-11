@@ -35847,15 +35847,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -87.19342
+      value: -84.47
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 74.043976
+      value: 73.21
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.296997
+      value: 3.75
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55518,8 +55518,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 45, y: 15, z: 45}
-  m_Center: {x: 0, y: 5, z: 5}
+  m_Size: {x: 50, y: 20, z: 50}
+  m_Center: {x: 0, y: 6, z: 5}
 --- !u!114 &961826233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89730,15 +89730,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -87.19342
+      value: -85.42
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 74.043976
+      value: 72.88
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.296997
+      value: 2.82
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -95490,15 +95490,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -87.19342
+      value: -85
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 74.043976
+      value: 73
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.296997
+      value: 3.71
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -98366,6 +98366,10 @@ PrefabInstance:
       propertyPath: area
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4504414976480706178, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6020308598444310925, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -120.1
@@ -98409,6 +98413,10 @@ PrefabInstance:
     - target: {fileID: 6397291155531275063, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
       propertyPath: m_Name
       value: Kitty_001 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6397291155531275066, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -103081,15 +103089,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -87.19342
+      value: -84.89
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 74.043976
+      value: 72.96
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.296997
+      value: 3.15
       objectReference: {fileID: 0}
     - target: {fileID: 445200, guid: ba6d65d010e04c74492f45aada8d39d7, type: 3}
       propertyPath: m_LocalRotation.w

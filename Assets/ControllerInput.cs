@@ -242,8 +242,8 @@ public class ControllerInput : MonoBehaviour
             catRigidbody.linearVelocity = Vector3.zero;
             catRigidbody.angularVelocity = Vector3.zero;
             
-            // Add constraints to keep it upright and prevent spinning
-            catRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            // Don't freeze rotation - let animations control it
+            catRigidbody.constraints = RigidbodyConstraints.None;
             
             // Optionally add a small downward force for more natural drop
             catRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
@@ -253,11 +253,8 @@ public class ControllerInput : MonoBehaviour
         var catController = cat.GetComponent<CatController>();
         if (catController != null)
         {
-            // Notify the cat controller that it's been released
-            catController.OnSelectExit();
-            
-            // Find all PetAreaControllers and check if cat is inside any
-            Collider[] overlaps = Physics.OverlapSphere(cat.transform.position, 1f);
+            // Find all PetAreaControllers and check if cat is inside any FIRST
+            Collider[] overlaps = Physics.OverlapSphere(cat.transform.position, 5f);
             
             foreach (var overlap in overlaps)
             {
@@ -268,6 +265,9 @@ public class ControllerInput : MonoBehaviour
                     break;
                 }
             }
+            
+            // Notify the cat controller that it's been released (after setting area)
+            catController.OnSelectExit();
         }
         
         // Clear reference

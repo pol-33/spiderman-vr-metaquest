@@ -20,7 +20,7 @@ public class ControllerInput : MonoBehaviour
     private Rigidbody rb;
     private SpringJoint joint;
     private GameObject cat;
-    private FixedJoint catJoint;
+    private Rigidbody catRigidbody;
     private float distance;
 
     private Vector3 targetPoint; // world-space target point for the web hit
@@ -93,11 +93,9 @@ public class ControllerInput : MonoBehaviour
         }
         
         float grabValue = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger);
-        if(grabValue > 0.6)
+        if(grabValue > 0.6 && cat != null)
         {
-            cat.transform.localScale = Vector3.one * 6f;
-            cat.GetComponent<Rigidbody>().useGravity = true;
-            cat = null;
+            DropCat();
         }
 
         if (OVRInput.GetDown(OVRInput.Button.Three))
@@ -183,15 +181,57 @@ public class ControllerInput : MonoBehaviour
 
     void selectCat()
     {
+        if (cat != null) return; // Already holding a cat
+        
         RaycastHit hit;
-        int layerMask = LayerMask.GetMask("Cat"); // ignore player layer
+        int layerMask = LayerMask.GetMask("Cat");
         Vector3 start = transform.position + transform.forward * 0.2f;
         bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
             cat = hit.collider.gameObject;
+            catRigidbody = cat.GetComponent<Rigidbody>();
+            
+            if (catRigidbody != null)
+            {
+                // Disable physics while holding
+                catRigidbody.isKinematic = true;
+                catRigidbody.useGravity = false;
+            }
+            
             cat.transform.localScale = Vector3.one;
         }
+    }
+    
+    void DropCat()
+    {
+        if (cat == null) return;
+        
+        // Reset scale
+        cat.transform.localScale = Vector3.one * 6f;
+        
+        if (catRigidbody != null)
+        {
+            cat.transform.rotation = Quaternion.identity; // Keep upright
+            
+            // Re-enable physics
+            catRigidbody.isKinematic = false;
+            catRigidbody.useGravity = true;
+            
+            // Reset velocity to prevent swinging
+            catRigidbody.linearVelocity = Vector3.zero;
+            catRigidbody.angularVelocity = Vector3.zero;
+            
+            // Add constraints to keep it upright and prevent spinning
+            catRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            
+            // Optionally add a small downward force for more natural drop
+            catRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
+        }
+        
+        // Clear reference
+        cat = null;
+        catRigidbody = null;
     }
 
     // Get swing point

@@ -7,7 +7,7 @@ public class ControllerInput : MonoBehaviour
 {
     public GameObject vrCamParent;
     public GameObject vrEye;
-    public float moveSpeed = 15.0f;
+    public float moveSpeed = 5.0f;
     public GameObject predictionPoint;
     public LineRenderer lineRenderer;
     public float jumpForce = 10f;
@@ -27,17 +27,16 @@ public class ControllerInput : MonoBehaviour
     private bool hasPointed;
 
     private bool isGrounded;
-    public float groundCheckDistance = 4f;
+    public float groundCheckDistance = 5f;
 
     public float pullSpeed = 500;
-    public float strafeSpeed = 10;
+    public float strafeSpeed = 50;
     public float maxAirSpeed = 20f; // Maximum speed in the air
     public float maxSwingReleaseSpeed = 25f; // Maximum speed when releasing from swing
 
 
     public float maxDistance = 0;
     public float pullStrength = 10;
-    public bool useSpring = false;
 
     private void Start()
     {
@@ -100,25 +99,21 @@ public class ControllerInput : MonoBehaviour
             DropCat();
         }
 
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-
+        // Update locomotion provider state (trigger the tunneling vignette)
         UpdateLocomotionProvider();
 
-        // Controller position and rotation
-        //Vector3 position = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
-        //Debug.Log($"ControllerPosition: {position}");
-
-        //Quaternion rotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
-        //Debug.Log($"ControllerRotation: {rotation}");
-        Vector3 dir = targetPoint - rb.position;
-        if (distance > maxDistance)
-        {
-            //rb.AddForce(dir.normalized * pullStrength, ForceMode.Acceleration);
-        }
     }
+
     void UpdateLocomotionProvider()
     {
-        bool isMovingNow = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).magnitude > 0.1f || joint != null;
+        // Check if moving via thumbstick input
+        bool thumbstickMoving = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).magnitude > 0.1f;
+        
+        // Check if player has significant velocity (moving from momentum/swing/jump)
+        bool hasVelocity = rb.linearVelocity.magnitude > 2f;
+        
+        // Show vignette if: moving with thumbstick, currently swinging, OR has significant velocity (in air or on ground)
+        bool isMovingNow = thumbstickMoving || joint != null || hasVelocity;
 
         if (isMovingNow != wasMoving)
         {
@@ -372,8 +367,6 @@ public class ControllerInput : MonoBehaviour
 
         return hasHitFront;
     }
-
-
 
     void Jump()
     {

@@ -1,6 +1,7 @@
 using Oculus.Interaction;
 using UnityEngine;
 using System.Collections;
+using System;
 
 
 public class ControllerInput : MonoBehaviour
@@ -38,6 +39,12 @@ public class ControllerInput : MonoBehaviour
     public float maxDistance = 0;
     public float pullStrength = 10;
 
+    private bool turning = false;
+    private float savedAngle = 0f;
+    
+    private GameObject lastHighlightedCat = null;
+    private Color[] originalCatColors = null;
+
     private void Start()
     {
         Application.targetFrameRate = 120;
@@ -49,7 +56,7 @@ public class ControllerInput : MonoBehaviour
     {
         isGrounded = CheckGrounded();
 
-        // A Button Right (OVRInput.Button.One) - Jump 
+        // A Button Right (OVRInput.Button.Three) - Jump 
         if (OVRInput.GetDown(OVRInput.Button.Three) && isGrounded)
         {
             Jump();
@@ -77,7 +84,7 @@ public class ControllerInput : MonoBehaviour
                 moveThumb();
             }
 
-            selectCat();
+            grabCat();
         }
         else
         {
@@ -85,6 +92,8 @@ public class ControllerInput : MonoBehaviour
             stopSwing();
             delLine();
             moveThumb();
+
+            selectCat();
         }
 
         if (cat != null)
@@ -99,9 +108,30 @@ public class ControllerInput : MonoBehaviour
             DropCat();
         }
 
+        if (grabValue > 0.6 && cat == null)
+        {
+            if (!turning)
+            {
+                turning = true;
+                Debug.Log("rotating");
+            }
+            //turnCamera();  NO VA BIEN
+        }
+        else if (grabValue < 0.6 && cat == null)
+        {
+            if (turning)
+            {
+                Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
+                Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
+                float newAngle = Vector2.Angle(contVec - camVec, new Vector2(1, 0));
+                if ((contVec - camVec).y < 0) newAngle = -newAngle;
+                savedAngle = newAngle;
+                turning = false;
+            }
+            
+        }
         // Update locomotion provider state (trigger the tunneling vignette)
         UpdateLocomotionProvider();
-
     }
 
     void UpdateLocomotionProvider()
@@ -188,7 +218,7 @@ public class ControllerInput : MonoBehaviour
         }
     }
 
-    void selectCat()
+    void grabCat()
     {
         if (cat != null) return; // Already holding a cat
         
@@ -198,6 +228,8 @@ public class ControllerInput : MonoBehaviour
         bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
+            RestoreCatColors();
+            
             cat = hit.collider.gameObject;
             catRigidbody = cat.GetComponent<Rigidbody>();
             
@@ -218,7 +250,67 @@ public class ControllerInput : MonoBehaviour
             }
         }
     }
+
+    // We indicate that the cat is selectable by changing its color
+    void selectCat()
+    {
+        if (cat != null) return; // Already holding a cat
+        
+        RaycastHit hit;
+        int layerMask = LayerMask.GetMask("Cat");
+        Vector3 start = transform.position + transform.forward * 0.2f;
+        bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
+        
+        if (hasHit)
+        {
+            var catObject = hit.collider.gameObject;
+            
+            // If this is a different cat than before, restore the previous cat's colors
+            if (lastHighlightedCat != null && lastHighlightedCat != catObject)
+            {
+                RestoreCatColors();
+            }
+            
+            // If this is a new cat to highlight, save and brighten its colors
+            if (lastHighlightedCat != catObject)
+            {
+                lastHighlightedCat = catObject;
+                
+                // Get all renderers in the cat and its children
+                Renderer[] renderers = catObject.GetComponentsInChildren<Renderer>();
+                originalCatColors = new Color[renderers.Length];
+                
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    originalCatColors[i] = renderers[i].material.color;
+                    renderers[i].material.color = originalCatColors[i] * 2.8f; // Brighten by 180%
+                }
+            }
+        }
+        else
+        {
+            // No cat in sight, restore colors if needed
+            if (lastHighlightedCat != null)
+            {
+                RestoreCatColors();
+            }
+        }
+    }
     
+    void RestoreCatColors()
+    {
+        if (lastHighlightedCat != null && originalCatColors != null)
+        {
+            Renderer[] renderers = lastHighlightedCat.GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < renderers.Length && i < originalCatColors.Length; i++)
+            {
+                renderers[i].material.color = originalCatColors[i];
+            }
+            lastHighlightedCat = null;
+            originalCatColors = null;
+        }
+    }
+
     void DropCat()
     {
         if (cat == null) return;
@@ -400,6 +492,21 @@ public class ControllerInput : MonoBehaviour
             Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
             rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
         }
+    }
+
+    void turnCamera()
+    {
+        Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
+        Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
+        float newAngle = Vector2.Angle(contVec-camVec, new Vector2(1, 0));
+        //if (newAngle > 5) newAngle = 0;
+        if ((contVec - camVec).y < 0) newAngle = -newAngle;
+        float rotationAngle = newAngle - savedAngle;
+        
+        Debug.Log(rotationAngle);
+
+        vrCamParent.transform.eulerAngles = vrCamParent.transform.eulerAngles + new Vector3(0, rotationAngle, 0);
+        savedAngle = 0;
     }
 
     // IEnumerator AddForwardForceAfterDelay(float delay)

@@ -41,6 +41,9 @@ public class ControllerInputRight : MonoBehaviour
 
     private bool turning = false;
     private float savedAngle = 0f;
+    
+    private GameObject lastHighlightedCat = null;
+    private Color[] originalCatColors = null;
 
     private void Start()
     {
@@ -81,7 +84,7 @@ public class ControllerInputRight : MonoBehaviour
                 moveThumb();
             }
 
-            selectCat();
+            grabCat();
         }
         else
         {
@@ -89,6 +92,8 @@ public class ControllerInputRight : MonoBehaviour
             stopSwing();
             delLine();
             moveThumb();
+
+            selectCat();
         }
 
         if (cat != null)
@@ -213,7 +218,7 @@ public class ControllerInputRight : MonoBehaviour
         }
     }
 
-    void selectCat()
+    void grabCat()
     {
         if (cat != null) return; // Already holding a cat
         
@@ -223,6 +228,8 @@ public class ControllerInputRight : MonoBehaviour
         bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
+            RestoreCatColors();
+            
             cat = hit.collider.gameObject;
             catRigidbody = cat.GetComponent<Rigidbody>();
             
@@ -243,7 +250,67 @@ public class ControllerInputRight : MonoBehaviour
             }
         }
     }
+
+    // We indicate that the cat is selectable by changing its color
+    void selectCat()
+    {
+        if (cat != null) return; // Already holding a cat
+        
+        RaycastHit hit;
+        int layerMask = LayerMask.GetMask("Cat");
+        Vector3 start = transform.position + transform.forward * 0.2f;
+        bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
+        
+        if (hasHit)
+        {
+            var catObject = hit.collider.gameObject;
+            
+            // If this is a different cat than before, restore the previous cat's colors
+            if (lastHighlightedCat != null && lastHighlightedCat != catObject)
+            {
+                RestoreCatColors();
+            }
+            
+            // If this is a new cat to highlight, save and brighten its colors
+            if (lastHighlightedCat != catObject)
+            {
+                lastHighlightedCat = catObject;
+                
+                // Get all renderers in the cat and its children
+                Renderer[] renderers = catObject.GetComponentsInChildren<Renderer>();
+                originalCatColors = new Color[renderers.Length];
+                
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    originalCatColors[i] = renderers[i].material.color;
+                    renderers[i].material.color = originalCatColors[i] * 2.8f; // Brighten by 180%
+                }
+            }
+        }
+        else
+        {
+            // No cat in sight, restore colors if needed
+            if (lastHighlightedCat != null)
+            {
+                RestoreCatColors();
+            }
+        }
+    }
     
+    void RestoreCatColors()
+    {
+        if (lastHighlightedCat != null && originalCatColors != null)
+        {
+            Renderer[] renderers = lastHighlightedCat.GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < renderers.Length && i < originalCatColors.Length; i++)
+            {
+                renderers[i].material.color = originalCatColors[i];
+            }
+            lastHighlightedCat = null;
+            originalCatColors = null;
+        }
+    }
+
     void DropCat()
     {
         if (cat == null) return;

@@ -7,7 +7,13 @@ public class PetAreaController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // Try to get CatController from the collider or its parent
         var cat = other.GetComponent<CatController>();
+        if (cat == null)
+        {
+            cat = other.GetComponentInParent<CatController>();
+        }
+        
         if (cat != null)
         {
             catsInArea.Add(cat);
@@ -17,7 +23,13 @@ public class PetAreaController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        // Try to get CatController from the collider or its parent
         var cat = other.GetComponent<CatController>();
+        if (cat == null)
+        {
+            cat = other.GetComponentInParent<CatController>();
+        }
+        
         if (cat != null && catsInArea.Contains(cat))
         {
             catsInArea.Remove(cat);

@@ -213,6 +213,13 @@ public class ControllerInput : MonoBehaviour
             }
             
             cat.transform.localScale = Vector3.one;
+            
+            // Notify the cat controller that it's been grabbed
+            var catController = cat.GetComponent<CatController>();
+            if (catController != null)
+            {
+                catController.OnSelectEnter();
+            }
         }
     }
     
@@ -240,6 +247,27 @@ public class ControllerInput : MonoBehaviour
             
             // Optionally add a small downward force for more natural drop
             catRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
+        }
+        
+        // Check if the cat is in a PetAreaController zone
+        var catController = cat.GetComponent<CatController>();
+        if (catController != null)
+        {
+            // Notify the cat controller that it's been released
+            catController.OnSelectExit();
+            
+            // Find all PetAreaControllers and check if cat is inside any
+            Collider[] overlaps = Physics.OverlapSphere(cat.transform.position, 1f);
+            
+            foreach (var overlap in overlaps)
+            {
+                var petArea = overlap.GetComponent<PetAreaController>();
+                if (petArea != null && overlap.bounds.Contains(cat.transform.position))
+                {
+                    catController.SetInsideArea(petArea);
+                    break;
+                }
+            }
         }
         
         // Clear reference

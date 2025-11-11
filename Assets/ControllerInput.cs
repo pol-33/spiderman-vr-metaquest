@@ -247,6 +247,12 @@ public class ControllerInput : MonoBehaviour
             if (catController != null)
             {
                 catController.OnSelectEnter();
+                
+                // Manually remove from area since kinematic rigidbodies don't trigger OnTriggerExit
+                if (catController.area != null)
+                {
+                    catController.area.RemoveCat(catController);
+                }
             }
         }
     }
@@ -337,21 +343,33 @@ public class ControllerInput : MonoBehaviour
             catRigidbody.AddForce(Vector3.down * 2f, ForceMode.Impulse);
         }
         
-        // Check if the cat is in a PetAreaController zone
+        // Get cat controller before checking areas
         var catController = cat.GetComponent<CatController>();
+        
+        // Check if the cat is in a PetAreaController zone
         if (catController != null)
         {
             // Find all PetAreaControllers and check if cat is inside any FIRST
             Collider[] overlaps = Physics.OverlapSphere(cat.transform.position, 5f);
             
+            bool foundArea = false;
             foreach (var overlap in overlaps)
             {
                 var petArea = overlap.GetComponent<PetAreaController>();
                 if (petArea != null && overlap.bounds.Contains(cat.transform.position))
                 {
                     catController.SetInsideArea(petArea);
+                    // Manually add to area since kinematic->non-kinematic transition may not trigger OnTriggerEnter
+                    petArea.AddCat(catController);
+                    foundArea = true;
                     break;
                 }
+            }
+            
+            // If not in any area, make sure it's cleared
+            if (!foundArea)
+            {
+                catController.SetInsideArea(null);
             }
             
             // Notify the cat controller that it's been released (after setting area)

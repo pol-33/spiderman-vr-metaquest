@@ -51,6 +51,26 @@ public class PetAreaController : MonoBehaviour
         );
     }
 
+    // Manually add a cat to the area (used when dropping a grabbed cat)
+    public void AddCat(CatController cat)
+    {
+        if (cat != null && !catsInArea.Contains(cat))
+        {
+            catsInArea.Add(cat);
+            UpdateCatCounter();
+        }
+    }
+
+    // Manually remove a cat from the area (used when grabbing a cat)
+    public void RemoveCat(CatController cat)
+    {
+        if (cat != null && catsInArea.Contains(cat))
+        {
+            catsInArea.Remove(cat);
+            UpdateCatCounter();
+        }
+    }
+
     // Update the cat counter text in the PetArea
     private void UpdateCatCounter()
     {

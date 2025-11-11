@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PetAreaController : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class PetAreaController : MonoBehaviour
         {
             catsInArea.Add(cat);
             cat.SetInsideArea(this);
+            UpdateCatCounter();
         }
     }
 
@@ -34,6 +36,7 @@ public class PetAreaController : MonoBehaviour
         {
             catsInArea.Remove(cat);
             cat.SetInsideArea(null);
+            UpdateCatCounter();
         }
     }
 
@@ -46,5 +49,15 @@ public class PetAreaController : MonoBehaviour
             bounds.center.y,
             Random.Range(bounds.min.z, bounds.max.z)
         );
+    }
+
+    // Update the cat counter text in the PetArea
+    private void UpdateCatCounter()
+    {
+        var textMesh = GetComponentInChildren<TextMeshPro>();
+        if (textMesh != null)
+        {
+            textMesh.text = $"Cats Rescued: {catsInArea.Count}/10";
+        }
     }
 }

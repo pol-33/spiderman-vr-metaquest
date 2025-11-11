@@ -98367,6 +98367,14 @@ PrefabInstance:
       propertyPath: area
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1915069586635926682, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
+      propertyPath: runMoveSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1915069586635926682, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
+      propertyPath: walkMoveSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4504414976480706178, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
       propertyPath: m_CollisionDetection
       value: 1

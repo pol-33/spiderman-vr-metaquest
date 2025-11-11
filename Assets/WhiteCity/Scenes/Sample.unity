@@ -10958,10 +10958,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ControllerInputExample
   vrCamParent: {fileID: 523426159}
   vrEye: {fileID: 534471268}
-  moveSpeed: 5
+  moveSpeed: 4
   predictionPoint: {fileID: 38306000}
   lineRenderer: {fileID: 2106835262}
-  jumpForce: 10
+  jumpForce: 12
   locomotionProvider: {fileID: 747675967}
   groundCheckDistance: 5
   pullSpeed: 500
@@ -112516,7 +112516,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ControllerInputRight
   vrCamParent: {fileID: 523426159}
   vrEye: {fileID: 534471268}
-  moveSpeed: 5
+  moveSpeed: 4
   predictionPoint: {fileID: 2092339975}
   lineRenderer: {fileID: 2046266132}
   jumpForce: 10

@@ -1,6 +1,7 @@
 using Oculus.Interaction;
 using UnityEngine;
 using System.Collections;
+using System;
 
 
 public class ControllerInputRight : MonoBehaviour
@@ -37,6 +38,9 @@ public class ControllerInputRight : MonoBehaviour
 
     public float maxDistance = 0;
     public float pullStrength = 10;
+
+    private bool turning = false;
+    private float savedAngle = 0f;
 
     private void Start()
     {
@@ -99,6 +103,28 @@ public class ControllerInputRight : MonoBehaviour
             DropCat();
         }
 
+        if (grabValue > 0.6 && cat == null)
+        {
+            if (!turning)
+            {
+                turning = true;
+                Debug.Log("rotating");
+            }
+            //turnCamera();  NO VA BIEN
+        }
+        else if (grabValue < 0.6 && cat == null)
+        {
+            if (turning)
+            {
+                Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
+                Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
+                float newAngle = Vector2.Angle(contVec - camVec, new Vector2(1, 0));
+                if ((contVec - camVec).y < 0) newAngle = -newAngle;
+                savedAngle = newAngle;
+                turning = false;
+            }
+            
+        }
         // Update locomotion provider state (trigger the tunneling vignette)
         UpdateLocomotionProvider();
     }
@@ -399,6 +425,21 @@ public class ControllerInputRight : MonoBehaviour
             Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
             rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
         }
+    }
+
+    void turnCamera()
+    {
+        Vector2 contVec = new Vector2(transform.position.x, transform.position.z);
+        Vector2 camVec = new Vector2(vrCamParent.transform.position.x, vrCamParent.transform.position.z);
+        float newAngle = Vector2.Angle(contVec-camVec, new Vector2(1, 0));
+        //if (newAngle > 5) newAngle = 0;
+        if ((contVec - camVec).y < 0) newAngle = -newAngle;
+        float rotationAngle = newAngle - savedAngle;
+        
+        Debug.Log(rotationAngle);
+
+        vrCamParent.transform.eulerAngles = vrCamParent.transform.eulerAngles + new Vector3(0, rotationAngle, 0);
+        savedAngle = 0;
     }
 
     // IEnumerator AddForwardForceAfterDelay(float delay)

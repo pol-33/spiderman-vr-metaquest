@@ -32,6 +32,7 @@ public class ControllerInput : MonoBehaviour
     public float pullSpeed = 500;
     public float strafeSpeed = 10;
     public float maxAirSpeed = 20f; // Maximum speed in the air
+    public float maxSwingReleaseSpeed = 25f; // Maximum speed when releasing from swing
 
 
     public float maxDistance = 0;
@@ -325,6 +326,16 @@ public class ControllerInput : MonoBehaviour
 
     void stopSwing()
     {
+        if (joint != null)
+        {
+            // Clamp velocity when releasing from swing to prevent excessive speed
+            Vector3 velocity = rb.linearVelocity;
+            if (velocity.magnitude > maxSwingReleaseSpeed)
+            {
+                rb.linearVelocity = velocity.normalized * maxSwingReleaseSpeed;
+            }
+        }
+        
         Destroy(joint);
     }
 
@@ -371,12 +382,30 @@ public class ControllerInput : MonoBehaviour
             // Jump off wall - limit the upward force to prevent infinite speed
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z); // Reset vertical velocity
             rb.AddForce(Vector3.up * jumpForce * 1.2f, ForceMode.Impulse);
+            
+            // Clamp horizontal velocity after jump
+            ClampHorizontalVelocity();
         }
         else
         {
             // Normal jump - reset vertical velocity first
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            
+            // Clamp horizontal velocity after jump
+            ClampHorizontalVelocity();
+        }
+    }
+
+    void ClampHorizontalVelocity()
+    {
+        // Clamp horizontal velocity to prevent excessive speed after jumping
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        
+        if (horizontalVelocity.magnitude > maxAirSpeed)
+        {
+            Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
+            rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
         }
     }
 

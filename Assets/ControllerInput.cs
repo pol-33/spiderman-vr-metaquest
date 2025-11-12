@@ -99,10 +99,9 @@ public class ControllerInput : MonoBehaviour
                 stopSwing();
                 delLine();
                 moveThumb();
-                grabCat();
             }
 
-            
+            grabCat();
         }
         else
         {

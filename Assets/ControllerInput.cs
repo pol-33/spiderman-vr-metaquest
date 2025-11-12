@@ -14,6 +14,10 @@ public class ControllerInput : MonoBehaviour
     public float jumpForce = 10f;
 
     public CustomLocomotionProvider locomotionProvider;
+    
+    // Audio
+    public AudioClip webShootSound;
+    private AudioSource audioSource;
 
     private bool wasMoving = false;
 
@@ -51,6 +55,18 @@ public class ControllerInput : MonoBehaviour
         Application.targetFrameRate = 120;
         OVRManager.display.displayFrequency = 120.0f;
         rb = vrCamParent.GetComponent<Rigidbody>();
+        
+        // Get or add AudioSource component
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        // Configure AudioSource for 3D spatial audio
+        audioSource.spatialBlend = 1.0f; // 1.0 = fully 3D
+        audioSource.volume = 0.2f; // Adjust volume as needed
+        audioSource.playOnAwake = false;
     }
 
     void Update()
@@ -426,6 +442,12 @@ public class ControllerInput : MonoBehaviour
     void startSwing()
     {
         if (joint != null) return;
+
+        // Play web shoot sound
+        if (webShootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(webShootSound);
+        }
 
         joint = rb.gameObject.AddComponent<SpringJoint>();
         joint.autoConfigureConnectedAnchor = false;

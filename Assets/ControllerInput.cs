@@ -14,6 +14,10 @@ public class ControllerInput : MonoBehaviour
     public float jumpForce = 10f;
 
     public CustomLocomotionProvider locomotionProvider;
+    
+    // Audio
+    public AudioClip webShootSound;
+    private AudioSource audioSource;
 
     private bool wasMoving = false;
 
@@ -43,7 +47,6 @@ public class ControllerInput : MonoBehaviour
     private float savedAngle = 0f;
     
     private GameObject lastHighlightedCat = null;
-    private Color[] originalCatColors = null;
 
     bool speedCap = true;
 
@@ -52,6 +55,18 @@ public class ControllerInput : MonoBehaviour
         Application.targetFrameRate = 120;
         OVRManager.display.displayFrequency = 120.0f;
         rb = vrCamParent.GetComponent<Rigidbody>();
+        
+        // Get or add AudioSource component
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        // Configure AudioSource for 3D spatial audio
+        audioSource.spatialBlend = 1.0f; // 1.0 = fully 3D
+        audioSource.volume = 0.2f; // Adjust volume as needed
+        audioSource.playOnAwake = false;
     }
 
     void Update()
@@ -149,7 +164,7 @@ public class ControllerInput : MonoBehaviour
     void UpdateLocomotionProvider()
     {
         // Check if moving via thumbstick input
-        bool thumbstickMoving = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).magnitude > 0.1f;
+        bool thumbstickMoving = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).magnitude > 0.1f || (turning);
         
         // Check if player has significant velocity (moving from momentum/swing/jump)
         bool hasVelocity = rb.linearVelocity.magnitude > 2f;
@@ -241,7 +256,16 @@ public class ControllerInput : MonoBehaviour
         bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
-            RestoreCatColors();
+            // Restore colors of previously highlighted cat
+            if (lastHighlightedCat != null)
+            {
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
+                lastHighlightedCat = null;
+            }
             
             cat = hit.collider.gameObject;
             catRigidbody = cat.GetComponent<Rigidbody>();
@@ -287,7 +311,11 @@ public class ControllerInput : MonoBehaviour
             // If this is a different cat than before, restore the previous cat's colors
             if (lastHighlightedCat != null && lastHighlightedCat != catObject)
             {
-                RestoreCatColors();
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
             }
             
             // If this is a new cat to highlight, save and brighten its colors
@@ -295,14 +323,10 @@ public class ControllerInput : MonoBehaviour
             {
                 lastHighlightedCat = catObject;
                 
-                // Get all renderers in the cat and its children
-                Renderer[] renderers = catObject.GetComponentsInChildren<Renderer>();
-                originalCatColors = new Color[renderers.Length];
-                
-                for (int i = 0; i < renderers.Length; i++)
+                var catController = catObject.GetComponent<CatController>();
+                if (catController != null)
                 {
-                    originalCatColors[i] = renderers[i].material.color;
-                    renderers[i].material.color = originalCatColors[i] * 2.8f; // Brighten by 180%
+                    catController.HighlightCat();
                 }
             }
         }
@@ -311,25 +335,16 @@ public class ControllerInput : MonoBehaviour
             // No cat in sight, restore colors if needed
             if (lastHighlightedCat != null)
             {
-                RestoreCatColors();
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
+                lastHighlightedCat = null;
             }
         }
     }
     
-    void RestoreCatColors()
-    {
-        if (lastHighlightedCat != null && originalCatColors != null)
-        {
-            Renderer[] renderers = lastHighlightedCat.GetComponentsInChildren<Renderer>();
-            for (int i = 0; i < renderers.Length && i < originalCatColors.Length; i++)
-            {
-                renderers[i].material.color = originalCatColors[i];
-            }
-            lastHighlightedCat = null;
-            originalCatColors = null;
-        }
-    }
-
     void DropCat()
     {
         if (cat == null) return;
@@ -427,6 +442,12 @@ public class ControllerInput : MonoBehaviour
     void startSwing()
     {
         if (joint != null) return;
+
+        // Play web shoot sound
+        if (webShootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(webShootSound);
+        }
 
         joint = rb.gameObject.AddComponent<SpringJoint>();
         joint.autoConfigureConnectedAnchor = false;

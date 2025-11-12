@@ -11117,6 +11117,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 2106835262}
   jumpForce: 12
   locomotionProvider: {fileID: 747675967}
+  webShootSound: {fileID: 8300000, guid: d2de6ef46e4244574957191ddcd19763, type: 3}
   groundCheckDistance: 5
   pullSpeed: 500
   strafeSpeed: 50
@@ -113493,6 +113494,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 2046266132}
   jumpForce: 10
   locomotionProvider: {fileID: 747675967}
+  webShootSound: {fileID: 8300000, guid: d2de6ef46e4244574957191ddcd19763, type: 3}
   groundCheckDistance: 5
   pullSpeed: 500
   strafeSpeed: 50

@@ -431,6 +431,7 @@ public class ControllerInputRight : MonoBehaviour
         }
         else
         {
+            predictionPoint.SetActive(true);
             // store a fallback world-space point
             targetPoint = transform.position + transform.forward * 100;
             predictionPoint.transform.position = targetPoint;

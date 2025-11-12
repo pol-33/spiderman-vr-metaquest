@@ -16,6 +16,10 @@ public class CatController : MonoBehaviour
     private float nextSpeedChangeTime = 5f; // Change speed every 5 seconds
     private bool isRunning = false;
 
+    private Color[] originalCatColors = null;
+    private Renderer[] catRenderers = null;
+    private bool isHighlighted = false;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,6 +43,42 @@ public class CatController : MonoBehaviour
         {
             animator.SetFloat("State", 0f);
             animator.SetFloat("Vert", 0f);
+        }
+        
+        // Save original colors
+        SaveOriginalColors();
+    }
+    
+    private void SaveOriginalColors()
+    {
+        catRenderers = GetComponentsInChildren<Renderer>();
+        originalCatColors = new Color[catRenderers.Length];
+        
+        for (int i = 0; i < catRenderers.Length; i++)
+        {
+            originalCatColors[i] = catRenderers[i].material.color;
+        }
+    }
+    
+    public void HighlightCat()
+    {
+        if (isHighlighted || catRenderers == null) return;
+        
+        isHighlighted = true;
+        for (int i = 0; i < catRenderers.Length; i++)
+        {
+            catRenderers[i].material.color = originalCatColors[i] * 2.8f; // Brighten by 180%
+        }
+    }
+    
+    public void RestoreColors()
+    {
+        if (!isHighlighted || catRenderers == null || originalCatColors == null) return;
+        
+        isHighlighted = false;
+        for (int i = 0; i < catRenderers.Length && i < originalCatColors.Length; i++)
+        {
+            catRenderers[i].material.color = originalCatColors[i];
         }
     }
 
@@ -197,4 +237,6 @@ public class CatController : MonoBehaviour
             animator.SetFloat("Vert", animState);
         }
     }
+
+    
 }

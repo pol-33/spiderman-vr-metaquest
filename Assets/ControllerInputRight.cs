@@ -43,7 +43,6 @@ public class ControllerInputRight : MonoBehaviour
     private float savedAngle = 0f;
     
     private GameObject lastHighlightedCat = null;
-    private Color[] originalCatColors = null;
 
     bool speedCap = true;
 
@@ -56,8 +55,6 @@ public class ControllerInputRight : MonoBehaviour
 
     void Update()
     {
-        bool wasGrounded = isGrounded;
-        //if(isGrounded && !wasGrounded) rb.linearVelocity = Vector3.zero;
         isGrounded = CheckGrounded();
 
         // A Button Right (OVRInput.Button.One) - Jump 
@@ -132,7 +129,7 @@ public class ControllerInputRight : MonoBehaviour
             {
                 turning = false;
             }
-            
+
         }
 
         if(speedCap)
@@ -186,7 +183,7 @@ public class ControllerInputRight : MonoBehaviour
                 // Use AddForce in the air to keep momentum and allow air control
                 // Only add force if we haven't reached max air speed
                 Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-                
+
                 if (Mathf.Abs(horizontalVelocity.x) < maxAirSpeed)
                 {
                     rb.AddForce(new Vector3(direction.x, 0, 0) * strafeSpeed * 10f * Time.deltaTime, ForceMode.Acceleration);
@@ -243,7 +240,16 @@ public class ControllerInputRight : MonoBehaviour
         bool hasHit = Physics.Raycast(start, transform.forward, out hit, 100, layerMask);
         if (hasHit)
         {
-            RestoreCatColors();
+            // Restore colors of previously highlighted cat
+            if (lastHighlightedCat != null)
+            {
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
+                lastHighlightedCat = null;
+            }
             
             cat = hit.collider.gameObject;
             catRigidbody = cat.GetComponent<Rigidbody>();
@@ -289,7 +295,11 @@ public class ControllerInputRight : MonoBehaviour
             // If this is a different cat than before, restore the previous cat's colors
             if (lastHighlightedCat != null && lastHighlightedCat != catObject)
             {
-                RestoreCatColors();
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
             }
             
             // If this is a new cat to highlight, save and brighten its colors
@@ -297,14 +307,10 @@ public class ControllerInputRight : MonoBehaviour
             {
                 lastHighlightedCat = catObject;
                 
-                // Get all renderers in the cat and its children
-                Renderer[] renderers = catObject.GetComponentsInChildren<Renderer>();
-                originalCatColors = new Color[renderers.Length];
-                
-                for (int i = 0; i < renderers.Length; i++)
+                var catController = catObject.GetComponent<CatController>();
+                if (catController != null)
                 {
-                    originalCatColors[i] = renderers[i].material.color;
-                    renderers[i].material.color = originalCatColors[i] * 2.8f; // Brighten by 180%
+                    catController.HighlightCat();
                 }
             }
         }
@@ -313,25 +319,16 @@ public class ControllerInputRight : MonoBehaviour
             // No cat in sight, restore colors if needed
             if (lastHighlightedCat != null)
             {
-                RestoreCatColors();
+                var lastCatController = lastHighlightedCat.GetComponent<CatController>();
+                if (lastCatController != null)
+                {
+                    lastCatController.RestoreColors();
+                }
+                lastHighlightedCat = null;
             }
         }
     }
     
-    void RestoreCatColors()
-    {
-        if (lastHighlightedCat != null && originalCatColors != null)
-        {
-            Renderer[] renderers = lastHighlightedCat.GetComponentsInChildren<Renderer>();
-            for (int i = 0; i < renderers.Length && i < originalCatColors.Length; i++)
-            {
-                renderers[i].material.color = originalCatColors[i];
-            }
-            lastHighlightedCat = null;
-            originalCatColors = null;
-        }
-    }
-
     void DropCat()
     {
         if (cat == null) return;
@@ -500,7 +497,7 @@ public class ControllerInputRight : MonoBehaviour
             // Jump off wall - limit the upward force to prevent infinite speed
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z); // Reset vertical velocity
             rb.AddForce(Vector3.up * jumpForce * 1.2f, ForceMode.Impulse);
-
+            
             // Clamp horizontal velocity after jump
             ClampHorizontalVelocity();
         }
@@ -509,7 +506,7 @@ public class ControllerInputRight : MonoBehaviour
             // Normal jump - reset vertical velocity first
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
+            
             // Clamp horizontal velocity after jump
             ClampHorizontalVelocity();
         }
@@ -519,14 +516,13 @@ public class ControllerInputRight : MonoBehaviour
     {
         // Clamp horizontal velocity to prevent excessive speed after jumping
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-
+        
         if (horizontalVelocity.magnitude > maxAirSpeed)
         {
             Vector3 clampedVelocity = horizontalVelocity.normalized * maxAirSpeed;
             rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
         }
     }
-
     void turnCamera()
     {
         Vector2 contVec = new Vector2(transform.localPosition.x, transform.localPosition.z);
@@ -534,7 +530,7 @@ public class ControllerInputRight : MonoBehaviour
         //if (newAngle > 5) newAngle = 0;
         if ((contVec).y < 0) newAngle = -newAngle;
         float rotationAngle = newAngle - savedAngle;
-        
+
         Debug.Log(rotationAngle);
 
         vrCamParent.transform.eulerAngles = vrCamParent.transform.eulerAngles + new Vector3(0, rotationAngle, 0);

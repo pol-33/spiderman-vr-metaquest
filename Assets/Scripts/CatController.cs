@@ -19,6 +19,11 @@ public class CatController : MonoBehaviour
     private Color[] originalCatColors = null;
     private Renderer[] catRenderers = null;
     private bool isHighlighted = false;
+    
+    // Location beacon
+    public GameObject locationBeacon; // Assign a cylinder prefab in Inspector
+    private GameObject activeBeacon;
+    private bool beaconActive = false;
 
     private void Start()
     {
@@ -98,6 +103,9 @@ public class CatController : MonoBehaviour
                 animator.SetFloat("State", 0.5f);
                 animator.SetFloat("Vert", 0.5f);
             }
+            
+            // Hide beacon when entering area
+            HideBeacon();
         }
         else
         {
@@ -109,6 +117,12 @@ public class CatController : MonoBehaviour
             {
                 animator.SetFloat("State", 0f);
                 animator.SetFloat("Vert", 0f);
+            }
+            
+            // Show beacon when outside area (if beacons are enabled)
+            if (beaconActive)
+            {
+                ShowBeacon();
             }
         }
     }
@@ -235,6 +249,47 @@ public class CatController : MonoBehaviour
             float animState = isRunning ? 1.0f : 0.5f;
             animator.SetFloat("State", animState);
             animator.SetFloat("Vert", animState);
+        }
+    }
+    
+    // Public method to set beacon state (called by AllCatsController)
+    public void SetBeaconState(bool enabled)
+    {
+        beaconActive = enabled;
+        
+        // Only show beacon if cat is NOT in an area and not grabbed
+        if (enabled && area == null && !isGrabbed)
+        {
+            ShowBeacon();
+        }
+        else
+        {
+            HideBeacon();
+        }
+    }
+    
+    private void ShowBeacon()
+    {
+        if (locationBeacon != null && activeBeacon == null)
+        {
+            // Instantiate beacon at cat's position, offset upward
+            Vector3 beaconPosition = transform.position + Vector3.up * 10f; // 10 units above cat
+            activeBeacon = Instantiate(locationBeacon, beaconPosition, Quaternion.identity);
+            activeBeacon.transform.SetParent(transform); // Parent to cat so it follows
+            activeBeacon.transform.localPosition = new Vector3(0, 10f, 0); // Local offset
+        }
+        else if (activeBeacon != null)
+        {
+            activeBeacon.SetActive(true);
+        }
+    }
+    
+    private void HideBeacon()
+    {
+        if (activeBeacon != null)
+        {
+            Destroy(activeBeacon);
+            activeBeacon = null;
         }
     }
 

@@ -45,7 +45,7 @@ public class ControllerInputRight : MonoBehaviour
     private GameObject lastHighlightedCat = null;
     private Color[] originalCatColors = null;
 
-    bool speedCap = false;
+    bool speedCap = true;
 
     private void Start()
     {
@@ -57,9 +57,8 @@ public class ControllerInputRight : MonoBehaviour
     void Update()
     {
         bool wasGrounded = isGrounded;
-        isGrounded = CheckGrounded();
-
         //if(isGrounded && !wasGrounded) rb.linearVelocity = Vector3.zero;
+        isGrounded = CheckGrounded();
 
         // A Button Right (OVRInput.Button.One) - Jump 
         if (OVRInput.GetDown(OVRInput.Button.One) && isGrounded)

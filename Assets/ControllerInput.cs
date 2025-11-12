@@ -45,7 +45,7 @@ public class ControllerInput : MonoBehaviour
     private GameObject lastHighlightedCat = null;
     private Color[] originalCatColors = null;
 
-    bool speedCap = false;
+    bool speedCap = true;
 
     private void Start()
     {
@@ -223,7 +223,7 @@ public class ControllerInput : MonoBehaviour
             }
             else
             {
-                joint.maxDistance = distance * 1.8f;
+                joint.maxDistance = distance * 1.1f;
                 joint.minDistance = 0;//distance * 1.2f;
             }
             // The distance grapple will try to keep from grapple point. 

@@ -160,6 +160,9 @@ public class CatController : MonoBehaviour
             animator.SetFloat("State", 0f);
             animator.SetFloat("Vert", 0f);
         }
+        
+        // Hide beacon when grabbed
+        HideBeacon();
     }
 
     public void OnSelectExit()
@@ -177,6 +180,14 @@ public class CatController : MonoBehaviour
             {
                 animator.SetFloat("State", 0.5f);
                 animator.SetFloat("Vert", 0.5f);
+            }
+        }
+        else
+        {
+            // If released outside area and beacons are enabled, show beacon
+            if (beaconActive)
+            {
+                ShowBeacon();
             }
         }
     }

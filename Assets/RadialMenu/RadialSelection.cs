@@ -23,6 +23,7 @@ public class RadialSelection : MonoBehaviour
 
     private List<GameObject> spawnedParts = new List<GameObject>();
     private int currentSelectedPartIndex = -1;
+    private bool isSubmenuActive = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +34,12 @@ public class RadialSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Don't respond to input if a submenu is active
+        if (isSubmenuActive)
+        {
+            return;
+        }
+
         if (OVRInput.GetDown(spawnButton))
         {
             SpawnRadialPart();
@@ -47,6 +54,12 @@ public class RadialSelection : MonoBehaviour
         {
             HideAndTriggerSelected();
         }
+    }
+
+    // Called by submenu when it becomes active
+    public void SetSubmenuActive(bool active)
+    {
+        isSubmenuActive = active;
     }
     
     public void HideAndTriggerSelected()

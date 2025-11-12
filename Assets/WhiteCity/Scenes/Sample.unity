@@ -56286,6 +56286,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7245563912da44f4eb5e7a0eeae31777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  totalCatsToRescue: 10
+  victoryMusic: {fileID: 8300000, guid: 31ce68ae6466042a3bc78f1156411c05, type: 3}
 --- !u!1001 &962282213
 PrefabInstance:
   m_ObjectHideFlags: 0

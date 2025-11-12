@@ -4,7 +4,26 @@ using TMPro;
 
 public class PetAreaController : MonoBehaviour
 {
+    public int totalCatsToRescue = 10;
+    public AudioClip victoryMusic;
+    
     private HashSet<CatController> catsInArea = new HashSet<CatController>();
+    private AudioSource audioSource;
+
+    private void Start()
+    {
+        // Get or add AudioSource component
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        // Configure AudioSource
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.volume = 0.4f;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -77,7 +96,22 @@ public class PetAreaController : MonoBehaviour
         var textMesh = GetComponentInChildren<TextMeshPro>();
         if (textMesh != null)
         {
-            textMesh.text = $"Cats Rescued: {catsInArea.Count}/10";
+            textMesh.text = $"Cats Rescued: {catsInArea.Count}/{totalCatsToRescue}";
+        }
+        
+        // Check if all cats are rescued
+        if (catsInArea.Count >= totalCatsToRescue)
+        {
+            PlayVictoryMusic();
+        }
+    }
+    
+    private void PlayVictoryMusic()
+    {
+        if (victoryMusic != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(victoryMusic);
+            Debug.Log("All cats rescued! Playing victory music!");
         }
     }
 }
